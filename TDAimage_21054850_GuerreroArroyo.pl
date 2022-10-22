@@ -21,6 +21,10 @@ ColorR: Numero >= o  y <= 255 , en el cual representa el Color R de un Pixel RGB
 ColorG: Numero >= o  y <= 255 , en el cual representa el Color G de un Pixel RGB.
 ColorB: Numero >= o  y <= 255 , en el cual representa el Color B de un Pixel RGB.
 Imagen: Es una lista en el cual contiene su Ancho , Alto , y los Pixeles.
+NewImagen: Lista que contiene Ancho, Alto, lista de pixeles . Esta fue el resultado de aplicarle una modificacion a la imagen principal.
+NewPixeles: Lista que contiene pixeles, en el cual fue el resultado de una modificacion de la lista de pixeles principal.
+NewPixel: Lista que contiene Alto, Ancho , color y profundidad del pixel. Esta surge de la modificacion de un pixel principal.
+NewAnchoPixel: Numero , en el cual surge de la modificacion del ancho de un pixel.
 
 */
 
@@ -29,29 +33,30 @@ Imagen: Es una lista en el cual contiene su Ancho , Alto , y los Pixeles.
 %predicates
 /*
 TDA pixbit:
-	pixbit_d(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]).
+    pixbit_d(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]).
     getbit(Pixel,Bit).
     bit(Bit).
     pixbit(Pixel).
 
 TDA pixhex:
-	pixhex_d(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]).
+    pixhex_d(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]).
     getHex(Pixel,Hex).
     pixhex(Pixel).
 
 TDA pixrgb:
-	pixrgb_d(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth]).
+    pixrgb_d(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth]).
     getR(Pixel,ColorR).
     getG(Pixel,ColorG).
     getB(Pixel,ColorB).
     pixRGB(Pixel).
 
 TDA image:
-	image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen).
+    image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen).
     imageIsBitmap(Imagen).
     imageIsPixmap(Imagen).
     imageIsHexmap(Imagen).
     imageIsCompressed(Imagen).
+    imageFlipH(Imagen, NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -59,11 +64,11 @@ TDA image:
 %goals
 /*
 Principales:
-	pixbit_d , pixhex_d , image , imageIsBitmap ,  imageIsPixmap ,  imageIsHexmap , imageIsCompressed.
+    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH.
 
 Segundarias:
-	pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
-    pixelesRGB , pixelesHex , contadorpixeles.
+    pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
+    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH.
 */
 
 
@@ -336,12 +341,12 @@ image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen):-
 
 /*
 Predicado: pixelesbit
-Descripcion: Función que permite determinar si la imagen corresponde a un bitmap-d.
-Tipo de algoritmo/estrategia: Fuerza bruta, ya que Su fundamento es muy simple, probar todas las posibles combinaciones,
-                              recorrer todos los caminos hasta dar con la situación que es igual que la solución.
-Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : (1 1 ((0 0 1 10))) ).
+Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixbit.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista (Pixeles).
 Recorrido(Retorno): Booleano.
 */
+
 pixelesbit([]).
 pixelesbit([Pixel|Pixeles]):-
     pixbit(Pixel),
@@ -349,7 +354,7 @@ pixelesbit([Pixel|Pixeles]):-
 
 /*
 Predicado: imageIsBitmap
-Descripcion: Función que permite determinar si la imagen corresponde a un Bitmap
+Descripcion: Predicado que permite determinar si la imagen corresponde a un bitmap-d
 Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
 Recorrido(Retorno): Booleano.
 */
@@ -363,11 +368,24 @@ imageIsBitmap(Imagen):-
  * ----------------------------------------------------------------------
 */
 
+/*
+Predicado: pixelesRGB
+Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixrgb.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista (Pixeles).
+Recorrido(Retorno): Booleano.
+*/
 pixelesRGB([]).
 pixelesRGB([Pixel|Pixeles]):-
     pixRGB(Pixel),
     pixelesRGB(Pixeles).
 
+/*
+Predicado: imageIsPixmap
+Descripcion: Predicado que permite determinar si la imagen corresponde a un pixmap-d.
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Recorrido(Retorno): Booleano.
+*/
 imageIsPixmap(Imagen):-
     pixeles(Imagen,Pixeles),
     pixelesRGB(Pixeles).
@@ -379,11 +397,24 @@ imageIsPixmap(Imagen):-
  * ----------------------------------------------------------------------
 */
 
+/*
+Predicado: pixelesHex
+Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixhex.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista (Pixeles).
+Recorrido(Retorno): Booleano.
+*/
 pixelesHex([]).
 pixelesHex([Pixel|Pixeles]):-
     pixhex(Pixel),
     pixelesHex(Pixeles).
 
+/*
+Predicado: imageIsHexmap
+Descripcion: Predicado que permite determinar si la imagen corresponde a un pixhex-d.
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Recorrido(Retorno): Booleano.
+*/
 imageIsHexmap(Imagen):-
     pixeles(Imagen,Pixeles),
     pixelesHex(Pixeles).
@@ -395,6 +426,14 @@ imageIsHexmap(Imagen):-
  * ----------------------------------------------------------------------
 */
 
+
+/*
+Predicado: contadorpixeles
+Descripcion: Cuenta los pixeles que no estan comprimidos, osea que no esten dentro de otra lista.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): Numero.
+*/
 contadorpixeles([],0):- !.
 contadorpixeles([Pixel|Pixeles],RespContador):-
     contador(Pixel , RespContador1),
@@ -405,9 +444,62 @@ contadorpixeles([Pixel|Pixeles],RespContador):-
     contadorpixeles(Pixeles,RespSig), RespContador is RespSig+1.
 
 
+
+/*
+Predicado: imageIsCompressed
+Descripcion: Predicado que determina si una imagen está comprimida, a través
+             de la comporación entre el area de la imagen con la cantidad de pixeles de esta.
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Recorrido(Retorno): Booleano.
+*/
 imageIsCompressed(Imagen):-
     pixeles(Imagen,Pixeles),
     contadorpixeles(Pixeles,RespContador),
     obtposicion(1,Imagen,AnchoImage),
     obtposicion(2,Imagen,AltoImage),
     RespContador < (AnchoImage*AltoImage) .
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageFlipH-----------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+/*
+Predicado: flipH
+Descripcion: Invierte horizontalmente un pixel , cambiando su ancho.
+Dominio(Argumento de entrada): lista (Pixel) , Numero(Ancho de la imagen).
+Recorrido(Retorno): Lista(Nuevo pixel invertido horizontalmente).
+*/
+flipH([AltoPixel, AnchoPixel|Cola],AnchoImage,NewPixel):-
+    NewAnchoPixel is ((AnchoImage-1)- AnchoPixel),
+    append([AltoPixel,NewAnchoPixel],Cola,NewPixel).
+
+/*
+Predicado: pixflipH
+Descripcion: Predicado que invierte horizonalmente pixel por pixel , cambiando su ancho.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): lista(Nueva lista de pixeles).
+*/
+
+pixflipH([],_,[]).
+pixflipH([Pixel|Pixeles],AnchoImage,[NewPixel|RespSig]):-
+    pixflipH(Pixeles,AnchoImage,RespSig),
+    flipH(Pixel,AnchoImage,NewPixel).
+
+
+
+/*
+Predicado: imageFlipH
+Descripcion: Predicado que permite invertir una imágen horizontalmente, a traves del cambio de la variable ancho.
+Dominio(Argumento de entrada): lista ( image )
+Recorrido(Retorno): lista (la representación de la imagen invertida horizontalmente)
+*/
+imageFlipH(Imagen , NewImagen):-
+    pixeles(Imagen,Pixeles),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixflipH(Pixeles,AnchoImage,NewPixeles),
+    NewImagen = [AnchoImage , AltoImage , NewPixeles].
