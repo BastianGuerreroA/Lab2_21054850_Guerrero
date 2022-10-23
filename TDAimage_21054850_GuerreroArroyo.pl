@@ -25,6 +25,10 @@ NewImagen: Lista que contiene Ancho, Alto, lista de pixeles . Esta fue el result
 NewPixeles: Lista que contiene pixeles, en el cual fue el resultado de una modificacion de la lista de pixeles principal.
 NewPixel: Lista que contiene Alto, Ancho , color y profundidad del pixel. Esta surge de la modificacion de un pixel principal.
 NewAnchoPixel: Numero , en el cual surge de la modificacion del ancho de un pixel.
+NweAltoPixel: Numero , en el cual surge de la modificacion del Alto de un pixel.
+NewAnchoImage: Numero positivo, en el cual hace referencia al nuevo ancho de la imagen que se retornara.
+NewAltoImage: Numero positivo, en el cual hace referencia al nuevo alto de la imagen que se retornara.
+
 
 */
 
@@ -57,6 +61,7 @@ TDA image:
     imageIsHexmap(Imagen).
     imageIsCompressed(Imagen).
     imageFlipH(Imagen, NewImagen).
+    imageFlipV(Imagen, NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -64,12 +69,14 @@ TDA image:
 %goals
 /*
 Principales:
-    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH.
+    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
-    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH.
+    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV.
+
 */
+
 
 
 %----------------------------------------------------------------------
@@ -480,7 +487,7 @@ flipH([AltoPixel, AnchoPixel|Cola],AnchoImage,NewPixel):-
 Predicado: pixflipH
 Descripcion: Predicado que invierte horizonalmente pixel por pixel , cambiando su ancho.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): lista ( Pixeles).
+Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Ancho de la imagen).
 Recorrido(Retorno): lista(Nueva lista de pixeles).
 */
 
@@ -502,4 +509,49 @@ imageFlipH(Imagen , NewImagen):-
     obtposicion(1,Imagen,AnchoImage),
     obtposicion(2,Imagen,AltoImage),
     pixflipH(Pixeles,AnchoImage,NewPixeles),
+    NewImagen = [AnchoImage , AltoImage , NewPixeles].
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageFlipV-----------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+
+/*
+Predicado: flipV
+Descripcion: Invierte verticalmente un pixel , cambiando su alto.
+Dominio(Argumento de entrada): lista (Pixel) , Numero(Alto de la imagen).
+Recorrido(Retorno): Lista(Nuevo pixel invertido horizontalmente).
+*/
+
+flipV([AltoPixel|Cola],AltoImage,NewPixel):-
+    AltoPixel2 is ((AltoImage-1)-AltoPixel),
+    append([AltoPixel2],Cola,NewPixel).
+
+
+/*
+Predicado: pixflipV
+Descripcion: Predicado que invierte verticalmente pixel por pixel , cambiando su alto.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Alto de la imagen).
+Recorrido(Retorno): lista(Nueva lista de pixeles).
+*/
+pixflipV([],_,[]).
+pixflipV([Pixel|Pixeles],AltoImage,[NewPixel|RespSig]):-
+    pixflipV(Pixeles,AltoImage,RespSig),
+    flipV(Pixel,AltoImage,NewPixel).
+
+/*
+Predicado: imageFlipV
+Descripcion: Predicado que permite invertir una imágen Verticalmente, a traves del cambio de la variable alto.
+Dominio(Argumento de entrada): lista ( image )
+Recorrido(Retorno): lista (la representación de la imagen invertida verticalmente)
+*/
+imageFlipV(Imagen , NewImagen):-
+    pixeles(Imagen,Pixeles),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixflipV(Pixeles,AltoImage,NewPixeles),
     NewImagen = [AnchoImage , AltoImage , NewPixeles].
