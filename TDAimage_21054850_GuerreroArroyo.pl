@@ -28,6 +28,18 @@ NewAnchoPixel: Numero , en el cual surge de la modificacion del ancho de un pixe
 NweAltoPixel: Numero , en el cual surge de la modificacion del Alto de un pixel.
 NewAnchoImage: Numero positivo, en el cual hace referencia al nuevo ancho de la imagen que se retornara.
 NewAltoImage: Numero positivo, en el cual hace referencia al nuevo alto de la imagen que se retornara.
+X1: Numero >=0 , Representa la coordenada x (ancho) de una primera posición.
+Y1: Numero >=0 , Representa la coordenada y (alto) de una primera posición.
+X2: Numero >=0 , Representa la coordenada x (ancho) de una segunda posición.
+Y2: Numero >=0 , Representa la coordenada y (alto) de una segunda posición.
+AnchoTemp: Numero , en el cual este sera nuevamente modificado.
+AltoTemp: Numero , en el cual este sera nuevamente modificado.
+MenorX: Numero >= 0 , representa al menor ancho entre 2 entregados.
+MenorY: Numero >= 0 , representa al menor alto entre 2 entregados.
+Numero1: Numero entero
+Numero2: Numero entero
+MenorNumero: Es el menor numero entero , entre 2 numeros.
+NumeroAbs: Numero >=0 , representa el valor obsoluto de un numero.
 
 
 */
@@ -62,6 +74,7 @@ TDA image:
     imageIsCompressed(Imagen).
     imageFlipH(Imagen, NewImagen).
     imageFlipV(Imagen, NewImagen).
+    imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -69,11 +82,13 @@ TDA image:
 %goals
 /*
 Principales:
-    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV.
+    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
+    imageCrop.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
-    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV.
+    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
+    getmenor , valorabsoluto.
 
 */
 
@@ -555,3 +570,81 @@ imageFlipV(Imagen , NewImagen):-
     obtposicion(2,Imagen,AltoImage),
     pixflipV(Pixeles,AltoImage,NewPixeles),
     NewImagen = [AnchoImage , AltoImage , NewPixeles].
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageCrop------------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+/*
+Predicado: between
+Descripcion: Predicado que verifica si el pixel esta dentro del cuadrante dado.
+Dominio(Argumento de entrada): Numero(X1), Numero(Y1),Numero(X2), Numero(Y2), Lista(Pixel).
+Recorrido(Retorno): Booleano.
+*/
+between(X1,Y1,X2,Y2,[AltoPixel , AnchoPixel|_]):-
+    AltoPixel >= Y1 , AltoPixel =< Y2 , ! ; AltoPixel =< Y1 , AltoPixel >= Y2 ,
+    AnchoPixel >= X1 , AnchoPixel =< X2 , ! ; AnchoPixel =< X1 , AnchoPixel >= X2 .
+
+/*
+Predicado: getmenor
+Descripcion: Predicado que retorna el menor numero , entre 2 valores de entrada.
+Dominio(Argumento de entrada): Numero(entero), Numero(entero).
+Recorrido(Retorno): Numero(entero).
+*/
+getmenor(Numero1 , Numero2 , MenorNumero):-
+    Numero1 >= Numero2 , MenorNumero = Numero2 , ! ; Numero1 =< Numero2 , MenorNumero = Numero1.
+
+/*
+Predicado: valorabsoluto
+Descripcion: Predicado que toma un numero y lo combierte a positivo en caso de ser negativo.
+Dominio(Argumento de entrada): Numero(entero).
+Recorrido(Retorno): Numero >= 0.
+*/
+valorabsoluto(Numero1 , NumeroAbs ):-
+    Numero1 >= 0 , NumeroAbs = Numero1  , ! ; Numero1 =< 0 , NumeroAbs is  -1 * Numero1.
+
+/*
+Predicado: cambiocrop
+Descripcion: Predicado que toma un pixel y cambia sus parametros de ancho y alto.
+Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixel).
+Recorrido(Retorno): lista(Nuevo Pixel).
+*/
+cambiocrop(MenorX,MenorY,[AltoPixel , AnchoPixel|Cola],NewPixel):-
+    NewAltoPixel is AltoPixel - MenorY,
+    NewAnchoPixel is AnchoPixel - MenorX,
+    append([NewAltoPixel , NewAnchoPixel] , Cola , NewPixel).
+
+/*
+Predicado: crop_pixels
+Descripcion: Predicado que va pixel por pixel , cambiando sus parametros de ancho y alto.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixeles).
+Recorrido(Retorno): lista(Nueva lista de pixeles).
+*/
+crop_pixels(_,_,[],[]):- !.
+crop_pixels(MenorX , MenorY , [Pixel|Pixeles],[NewPixel|RespSig]):-
+    crop_pixels(MenorX ,MenorY, Pixeles ,RespSig),
+    cambiocrop(MenorX, MenorY , Pixel ,NewPixel).
+
+/*
+Predicado: imageCrop
+Descripcion: Predicado que permite recortar una imágen a partir de un cuadrante, entregado por coodenadas(2 puntos).
+Dominio(Argumento de entrada): lista ( image ) ,  x1  ,  Y1  ,  x2  , y2.
+Recorrido(Retorno): lista (NewImagen).
+*/
+imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen):-
+    AnchoTemp is X2-X1,
+    AltoTemp is Y2-Y1,
+    valorabsoluto(AnchoTemp , AnchoTemp2),
+    valorabsoluto(AltoTemp , AltoTemp2),
+    NewAnchoImage is AnchoTemp2+1,
+    NewAltoImage is AltoTemp2+1,
+    obtposicion(3,Imagen,Pixeles),
+    include(between(X1,Y1,X2,Y2) , Pixeles , NewPixeles),
+    getmenor(X1,X2,MenorX),
+    getmenor(Y1,Y2,MenorY),
+    crop_pixels(MenorX , MenorY , NewPixeles , NewPixeles2),
+    NewImagen = [NewAnchoImage , NewAltoImage, NewPixeles2].
