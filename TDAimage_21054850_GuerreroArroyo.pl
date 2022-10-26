@@ -9,7 +9,7 @@ Cabeza: La lista se puede ver como un predicado que tiene 2 partes ,[Cabeza|Cola
 Cola : La lista se puede ver como un predicado que tiene 2 partes ,[Cabeza|Cola] , en el cual la cola es una lista.
 Contenido: Hace referencia a lo que se obtiene en la posicion pedida de una lista, en el cual esta puede ser otra lista, un numero , un string ,etc.
 Contador: Como su mismo nombre lo dice, esta servira para ir incrementando o disminuyendo para finalmente hacer uso de este.
-RespContador: Es lo que sale de haber contado alguna cosa en el particular, en el cual este un numero, generalmente este puede representar el largo de una lista.
+RespContador: Es lo que sale de haber contado alguna cosa en el particular, en el cual este un numero. Generalmente este puede representar el largo de una lista.
 RespSig: Hace referencia a que esta es lo que devuelve el siguiente caso de la recursion, en el cual esta se esta esperando para usarse.
 AltoPixel: Es un numero Mayor o igual que 0, el cual representa la coordenada Y o al alto de un Pixel.
 AnchoPixel: Es un numero Mayor o igual que 0, el cual representa la coordenada X o al Ancho de un Pixel.
@@ -40,8 +40,19 @@ Numero1: Numero entero
 Numero2: Numero entero
 MenorNumero: Es el menor numero entero , entre 2 numeros.
 NumeroAbs: Numero >=0 , representa el valor obsoluto de un numero.
-
-
+RestR: Lista que contiene numeros mayor o igual que 0.
+RestG: Lista que contiene numeros mayor o igual que 0.
+RestB: Lista que contiene numeros mayor o igual que 0.
+RestX: Lista que contiene numeros mayor o igual que 0.
+StringR: String, representa el numero del color R , en Hexadecimal.
+StringG: String, representa el numero del color G , en Hexadecimal.
+StringB: String, representa el numero del color B , en Hexadecimal.
+StringX: String, representa el numero de un color , en Hexadecimal.
+UnionString: String , representa la union de 2 string.
+NumeroPos: Numero >= 0.
+StringNumeroPos: String , en cual representa un numero en hexadecimal.
+Resto: Numero >= 0.
+RestoList: Lista, en el cual contiene un Numero >= 0.
 */
 
 %----------------------------------------------------------------------
@@ -75,6 +86,7 @@ TDA image:
     imageFlipH(Imagen, NewImagen).
     imageFlipV(Imagen, NewImagen).
     imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen).
+    imageRGBToHex(Imagen, NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -83,12 +95,12 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop.
+    imageCrop,imageRGBToHex.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
-    getmenor , valorabsoluto.
+    getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string.
 
 */
 
@@ -631,7 +643,7 @@ crop_pixels(MenorX , MenorY , [Pixel|Pixeles],[NewPixel|RespSig]):-
 
 /*
 Predicado: imageCrop
-Descripcion: Predicado que permite recortar una imágen a partir de un cuadrante, entregado por coodenadas(2 puntos).
+Descripcion: Predicado que permite recortar una imágen a partir de un cuadrante, entregado por coordenadas(2 puntos).
 Dominio(Argumento de entrada): lista ( image ) ,  x1  ,  Y1  ,  x2  , y2.
 Recorrido(Retorno): lista (NewImagen).
 */
@@ -648,3 +660,122 @@ imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen):-
     getmenor(Y1,Y2,MenorY),
     crop_pixels(MenorX , MenorY , NewPixeles , NewPixeles2),
     NewImagen = [NewAnchoImage , NewAltoImage, NewPixeles2].
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageRGBToHex--------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+%Hechos
+num_string(0,"0").
+num_string(1,"1").
+num_string(2,"2").
+num_string(3,"3").
+num_string(4,"4").
+num_string(5,"5").
+num_string(6,"6").
+num_string(7,"7").
+num_string(8,"8").
+num_string(9,"9").
+num_string(10,"A").
+num_string(11,"B").
+num_string(12,"C").
+num_string(13,"D").
+num_string(14,"E").
+num_string(15,"F").
+%-----------------
+
+
+/*
+Predicado: divbase16
+Descripcion: Predicado en el que se divide un numero entre 16 , se conserva el resto en una lista y se vuelve a dividir el cociente,
+			 Hasta que este sea menor que 16 y se guarda en la lista.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Numero>=0.
+Recorrido(Retorno): lista.
+*/
+divbase16(NumeroPos , [NumeroPos]):- NumeroPos < 16 , !.
+divbase16(NumeroPos , RestX):-
+    NumeroPos1 is NumeroPos//16,
+    divbase16(NumeroPos1 , RespSig),
+    Resto is NumeroPos mod 16,
+    RestoList = [Resto],
+    append(RespSig,RestoList,RestX).
+
+/*
+Predicado: numberstring
+Descripcion: Predicado que te tranforma un numero a su representacion en Hexadecimal.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista.
+Recorrido(Retorno): String.
+*/
+numberstring2([],""):- !.
+numberstring2([NumeroPos,NumeroPos2|Cola],StringX):-
+    num_string(NumeroPos,StringNumeroPos1),
+    num_string(NumeroPos2,StringNumeroPos2),
+    numberstring2(Cola,RespSig),
+    string_concat(StringNumeroPos1, StringNumeroPos2, UnionString),
+    string_concat(UnionString, RespSig, StringX).
+
+/*
+Predicado: numberstring
+Descripcion: Predicado que te tranforma un numero a su representacion en Hexadecimal.
+Dominio(Argumento de entrada): lista.
+Recorrido(Retorno): String.
+*/
+numberstring(RestX,StringX):-
+    contador(RestX,RespContador), RespContador == 1 , obtposicion(1,RestX,NumeroPos),
+    num_string(NumeroPos , StringNumeroPos), string_concat("0", StringNumeroPos, StringX), ! ;
+    contador(RestX,RespContador2),  RespContador2 > 1 , numberstring2(RestX,StringX).
+
+/*
+Predicado: pixstring
+Descripcion: Predicado en el cual transforma la representacion de un pixel RGB a HEX.
+Dominio(Argumento de entrada): lista ( Pixel).
+Recorrido(Retorno): lista(Nuevo Pixel).
+*/
+pixelstring(Pixel,NewPixel):-
+    obtposicion(1,Pixel,AltoPixel),
+    obtposicion(2,Pixel,AnchoPixel),
+    getR(Pixel,ColorR),
+    getG(Pixel,ColorG),
+    getB(Pixel,ColorB),
+    obtposicion(6,Pixel,Depth),
+    divbase16(ColorR,RestR),
+    divbase16(ColorG,RestG),
+    divbase16(ColorB,RestB),
+    numberstring(RestR,StringR),
+    numberstring(RestG,StringG),
+    numberstring(RestB,StringB),
+    string_concat(StringR, StringG, UnionString),
+    string_concat(UnionString, StringB, UnionString1),
+    string_concat("#", UnionString1, UnionString2),
+    NewPixel = [AltoPixel , AnchoPixel , UnionString2 , Depth].
+
+/*
+Predicado: pixstring
+Descripcion: Predicado que va pixel por pixel , en el cual transforma la representacion de un pixel RGB a HEX.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): lista(Nueva lista de pixeles).
+*/
+pixstring([],[]).
+pixstring([Pixel|Pixeles],[NewPixel|RespSig]):-
+    pixstring(Pixeles,RespSig),
+    pixelstring(Pixel,NewPixel).
+
+/*
+Predicado: imageRGBToHex
+Descripcion: Predicado que permite transformar una imagen desde una representación RGB a una representación HEX.
+Dominio(Argumento de entrada): lista ( image )
+Recorrido(Retorno): lista (la imagen con la nueva representación).
+*/
+imageRGBToHex(Imagen, NewImagen):-
+    imageIsPixmap(Imagen),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixeles(Imagen,Pixeles),
+    pixstring(Pixeles,NewPixeles),
+    NewImagen = [AnchoImage , AltoImage ,NewPixeles].
