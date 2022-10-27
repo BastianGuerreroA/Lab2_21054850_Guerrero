@@ -53,6 +53,10 @@ NumeroPos: Numero >= 0.
 StringNumeroPos: String , en cual representa un numero en hexadecimal.
 Resto: Numero >= 0.
 RestoList: Lista, en el cual contiene un Numero >= 0.
+Histogram:	Lista , en el cual contiene los histogram de cada color perteneciente a la imagen.
+HistoColor: Lista , en el cual contiene el color y su frecuencia en la imagen.
+color: Es el color de un pixel Bit o Hex, ya que en estos tipos de pixel, el color se encuentra en la tercera posicion, por ende este puede ser un numero o String.
+
 */
 
 %----------------------------------------------------------------------
@@ -87,6 +91,7 @@ TDA image:
     imageFlipV(Imagen, NewImagen).
     imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen).
     imageRGBToHex(Imagen, NewImagen).
+    imageToHistogram(Imagen,Histogram).
 */
 
 %----------------------------------------------------------------------
@@ -95,12 +100,13 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex.
+    imageCrop,imageRGBToHex , imageToHistogram.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
-    getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string.
+    getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
+    histogram , limpieza ,conteopixe , histogramRGB , limpieza2.
 
 */
 
@@ -691,7 +697,7 @@ num_string(15,"F").
 /*
 Predicado: divbase16
 Descripcion: Predicado en el que se divide un numero entre 16 , se conserva el resto en una lista y se vuelve a dividir el cociente,
-			 Hasta que este sea menor que 16 y se guarda en la lista.
+             Hasta que este sea menor que 16 y se guarda en la lista.
 Tipo de algoritmo/estrategia: Recursión.
 Dominio(Argumento de entrada): Numero>=0.
 Recorrido(Retorno): lista.
@@ -779,3 +785,135 @@ imageRGBToHex(Imagen, NewImagen):-
     pixeles(Imagen,Pixeles),
     pixstring(Pixeles,NewPixeles),
     NewImagen = [AnchoImage , AltoImage ,NewPixeles].
+
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageToHistogram-----------------------------
+ * ----------------------------------------------------------------------
+*/
+
+%----------Histogram Caso Bit - Hex
+
+/*
+Predicado: conteopixel
+Descripcion: Predicado que cuenta la frecuencia de un color en una lista de pixeles.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles).
+Recorrido(Retorno): Numero(entero).
+*/
+conteopixel(_,[],1):- !.
+conteopixel(Pixel,[Pixel2|Pixeles],RespContador):-
+    obtposicion(3,Pixel,Color1),
+    obtposicion(3,Pixel2,Color2),
+    Color1 == Color2,
+    conteopixel(Pixel , Pixeles , RespSig),
+    RespContador is RespSig+1, ! ;
+    conteopixel(Pixel, Pixeles,RespSig),
+    RespContador is RespSig.
+
+/*
+Predicado: limpieza
+Descripcion: Predicado en el cual compara los colores de los pixeles ingresados para verificar si son iguales o no.
+Dominio(Argumento de entrada): lista ( Pixel) , lista ( Pixel).
+Recorrido(Retorno): Booleano..
+*/
+limpieza(Pixel,Pixel2):-
+    obtposicion(3,Pixel,Color1),
+    obtposicion(3,Pixel2,Color2),
+    Color1 == Color2.
+
+/*
+Predicado: histogram
+Descripcion: Predicado que toma un pixel, cuenta la frecuencia de su color en la lista de pixeles y sucesivamente se elimina los pixeles
+             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursión.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): lista(Histograma de frecuencia de cada color).
+*/
+histogram([],[]):- !.
+histogram([Pixel|Pixeles],[HistoColor|RespSig]):-
+    obtposicion(3,Pixel,Color),
+    conteopixel(Pixel,Pixeles, RespContador ),
+    exclude(limpieza(Pixel),Pixeles,NewPixeles),
+    histogram(NewPixeles,RespSig),
+    HistoColor = [Color, RespContador ] .
+
+%----------Histogram Caso RGB
+
+/*
+Predicado: conteopixelRGB
+Descripcion: Predicado que cuenta la frecuencia de un color en una lista de pixeles.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles).
+Recorrido(Retorno): Numero(entero).
+*/
+conteopixelRGB(_,[],1):- !.
+conteopixelRGB(Pixel,[Pixel2|Pixeles],RespContador):-
+    getR(Pixel,ColorR1),
+    getG(Pixel,ColorG1),
+    getB(Pixel,ColorB1),
+    getR(Pixel2,ColorR2),
+    getG(Pixel2,ColorG2),
+    getB(Pixel2,ColorB2),
+    ColorR1 == ColorR2,
+    ColorG1 == ColorG2,
+    ColorB1 == ColorB2,
+    conteopixelRGB(Pixel , Pixeles , RespSig),
+    RespContador is RespSig+1, ! ;
+    conteopixelRGB(Pixel,Pixeles,RespSig),
+    RespContador is RespSig.
+
+/*
+Predicado: limpieza
+Descripcion: Predicado en el cual compara los colores de los pixeles ingresados para verificar si son iguales o no.
+Dominio(Argumento de entrada): lista ( Pixel) , lista ( Pixel).
+Recorrido(Retorno): Booleano..
+*/
+limpieza2(Pixel,Pixel2):-
+    getR(Pixel,ColorR1),
+    getG(Pixel,ColorG1),
+    getB(Pixel,ColorB1),
+    getR(Pixel2,ColorR2),
+    getG(Pixel2,ColorG2),
+    getB(Pixel2,ColorB2),
+    ColorR1 == ColorR2,
+    ColorG1 == ColorG2,
+    ColorB1 == ColorB2.
+
+/*
+Predicado: histogramRGB
+Descripcion: Predicado que toma un pixel, cuenta la frecuencia de su color en la lista de pixeles y sucesivamente se elimina los pixeles
+             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursión.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): lista(Histograma de frecuencia de cada color).
+*/
+histogramRGB([],[]):- !.
+histogramRGB([Pixel|Pixeles],[HistoColor|RespSig]):-
+    getR(Pixel,ColorR),
+    getG(Pixel,ColorG),
+    getB(Pixel,ColorB),
+    conteopixelRGB(Pixel,Pixeles,RespContador),
+    exclude(limpieza2(Pixel),Pixeles,NewPixeles),
+    histogramRGB(NewPixeles,RespSig),
+    HistoColor = [[ColorR,ColorG,ColorB],RespContador].
+
+
+/*
+Predicado: imageToHistogram
+Descripcion: Predicado que retorna un histograma de frecuencias a partir de los colores en cada una de las imágenes.
+Dominio(Argumento de entrada): lista ( image ).
+Recorrido(Retorno): lista (lista con la cantidad de frecuencia de cada color , ej: [[1, 2], [0, 2]] ) .
+*/
+imageToHistogram(Imagen,Histogram):-
+    imageIsHexmap(Imagen),
+    pixeles(Imagen,Pixeles),
+    histogram(Pixeles,Histogram), !;
+    imageIsBitmap(Imagen),
+    pixeles(Imagen,Pixeles1),
+    histogram(Pixeles1,Histogram), !;
+    imageIsPixmap(Imagen),
+    pixeles(Imagen,Pixeles2),
+    histogramRGB(Pixeles2,Histogram).
