@@ -56,6 +56,7 @@ RestoList: Lista, en el cual contiene un Numero >= 0.
 Histogram:	Lista , en el cual contiene los histogram de cada color perteneciente a la imagen.
 HistoColor: Lista , en el cual contiene el color y su frecuencia en la imagen.
 color: Es el color de un pixel Bit o Hex, ya que en estos tipos de pixel, el color se encuentra en la tercera posicion, por ende este puede ser un numero o String.
+ImagenFlip: Lista , en el cual hace refencia al resultado de aplicarle un Flip a un imagen.
 
 */
 
@@ -92,6 +93,7 @@ TDA image:
     imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen).
     imageRGBToHex(Imagen, NewImagen).
     imageToHistogram(Imagen,Histogram).
+    imageRotate90(Imagen,NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -100,13 +102,13 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram.
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
     getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
-    histogram , limpieza ,conteopixe , histogramRGB , limpieza2.
+    histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix.
 
 */
 
@@ -697,7 +699,7 @@ num_string(15,"F").
 /*
 Predicado: divbase16
 Descripcion: Predicado en el que se divide un numero entre 16 , se conserva el resto en una lista y se vuelve a dividir el cociente,
-             Hasta que este sea menor que 16 y se guarda en la lista.
+			 Hasta que este sea menor que 16 y se guarda en la lista.
 Tipo de algoritmo/estrategia: Recursión.
 Dominio(Argumento de entrada): Numero>=0.
 Recorrido(Retorno): lista.
@@ -917,3 +919,49 @@ imageToHistogram(Imagen,Histogram):-
     imageIsPixmap(Imagen),
     pixeles(Imagen,Pixeles2),
     histogramRGB(Pixeles2,Histogram).
+
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageRotate90--------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+
+/*
+Predicado: cambiopix
+Descripcion: Predicado que toma un pixel y realiza un intercambio entre su ancho y alto.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel).
+Recorrido(Retorno): lista(Nuevo Pixel).
+*/
+cambiopix([AltoPixel,AnchoPixel|Cola],NewPixel):-
+    append([AnchoPixel,AltoPixel],Cola,NewPixel).
+
+
+/*
+Predicado: cambiaparametros
+Descripcion: Predicado que va pixel por pixel , cambiando el ancho y alto de estos.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles).
+Recorrido(Retorno): lista(Nueva lista de Pixeles).
+*/
+cambiaparametros([],[]):- !.
+cambiaparametros([Pixel|Pixeles],[NewPixel|RespSig]):-
+    cambiaparametros(Pixeles,RespSig),
+    cambiopix(Pixel,NewPixel).
+
+/*
+Predicado: imageRotate90
+Descripcion: Predicado que permite rotar la imagen 90° a la derecha.
+Dominio(Argumento de entrada): lista ( image )
+Recorrido(Retorno): lista (la imagen rotada 90° a la derecha)
+*/
+imageRotate90(Imagen,NewImagen):-
+    imageFlipV(Imagen,ImagenFlip),
+    obtposicion(1,ImagenFlip,AnchoImage),
+    obtposicion(2,ImagenFlip,AltoImage),
+    pixeles(ImagenFlip , Pixeles),
+    cambiaparametros(Pixeles,NewPixeles),
+    NewImagen = [AnchoImage , AltoImage , NewPixeles].
