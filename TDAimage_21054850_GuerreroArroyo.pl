@@ -36,8 +36,7 @@ AnchoTemp: Numero , en el cual este sera nuevamente modificado.
 AltoTemp: Numero , en el cual este sera nuevamente modificado.
 MenorX: Numero >= 0 , representa al menor ancho entre 2 entregados.
 MenorY: Numero >= 0 , representa al menor alto entre 2 entregados.
-Numero1: Numero entero
-Numero2: Numero entero
+Numero: Numero entero
 MenorNumero: Es el menor numero entero , entre 2 numeros.
 NumeroAbs: Numero >=0 , representa el valor obsoluto de un numero.
 RestR: Lista que contiene numeros mayor o igual que 0.
@@ -55,9 +54,10 @@ Resto: Numero >= 0.
 RestoList: Lista, en el cual contiene un Numero >= 0.
 Histogram:	Lista , en el cual contiene los histogram de cada color perteneciente a la imagen.
 HistoColor: Lista , en el cual contiene el color y su frecuencia en la imagen.
-color: Es el color de un pixel Bit o Hex, ya que en estos tipos de pixel, el color se encuentra en la tercera posicion, por ende este puede ser un numero o String.
+color: Es el color de un pixel Bit o Hex, por ende este puede ser un numero o String.
 ImagenFlip: Lista , en el cual hace refencia al resultado de aplicarle un Flip a un imagen.
-
+MayorHistogram: Lista , que contiene el un color y su frecuencia en la imagen.
+Colorf: Lista , que contiene el un color y su frecuencia en la imagen.
 */
 
 %----------------------------------------------------------------------
@@ -94,6 +94,7 @@ TDA image:
     imageRGBToHex(Imagen, NewImagen).
     imageToHistogram(Imagen,Histogram).
     imageRotate90(Imagen,NewImagen).
+    imageCompress(Imagen , NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -102,17 +103,16 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90.
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
     getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
-    histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix.
+    histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
+    myreplaceC1 , myreplaceC2 ,getmayorhistogram.
 
 */
-
-
 
 %----------------------------------------------------------------------
 
@@ -965,3 +965,102 @@ imageRotate90(Imagen,NewImagen):-
     pixeles(ImagenFlip , Pixeles),
     cambiaparametros(Pixeles,NewPixeles),
     NewImagen = [AnchoImage , AltoImage , NewPixeles].
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageCompress--------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+/*
+Predicado: getmayorhistogram
+Descripcion: Predicado que te entrega el color con mayor frecuencia obtenido del predicado Histogram.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Histogram).
+Recorrido(Retorno): lista([color,frecuencia]).
+*/
+getmayorhistogram([Colorf|Histogram],MayorHistogram1):- [] == Histogram ,MayorHistogram1 = Colorf, !.
+getmayorhistogram([Colorf|Histogram],MayorHistogram):-
+    obtposicion(2,Colorf,Numero1),
+    getmayorhistogram(Histogram , RespSig),
+    obtposicion(2,RespSig,Numero2),
+    Numero1 >= Numero2,
+    MayorHistogram = Colorf, !;
+    obtposicion(2,Colorf,Numero2),
+    getmayorhistogram(Histogram , RespSig2),
+    obtposicion(2,RespSig2,Numero3),
+    Numero2 < Numero3,
+    MayorHistogram = RespSig2.
+
+
+/*
+Predicado: myreplaceC1
+Descripcion: Predicado que encierra con corchete el pixel que contenga el color con mayor frecuencia en la imagen.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): Color (Bit o Hex) , lista (Pixeles).
+Recorrido(Retorno): lista(Nueva lista de Pixeles).
+*/
+myreplaceC1(_, [], []):- !.%caso base
+myreplaceC1(Color, [Pixel|Pixeles], [[Pixel]|RespSig]) :- obtposicion(3,Pixel,Color2), Color2 == Color ,myreplaceC1(Color,Pixeles, RespSig), !. %Donde se remplaza
+myreplaceC1(Color, [Pixel|Pixeles], [Pixel|RespSig]) :- obtposicion(3,Pixel,Color2), Color2 \= Color, myreplaceC1(Color, Pixeles, RespSig), !.
+
+
+/*
+Predicado: myreplaceC2
+Descripcion: Predicado que encierra con corchete el pixel que contenga el color con mayor frecuencia en la imagen.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): Color ( lista con el color RGB) , lista (Pixeles).
+Recorrido(Retorno): lista(Nueva lista de Pixeles).
+*/
+myreplaceC2(_, [], []):- !.%caso base
+myreplaceC2(Color, [Pixel|Pixeles], [[Pixel]|RespSig]) :-
+    getR(Pixel,ColorR),
+    getG(Pixel,ColorG),
+    getB(Pixel,ColorB),
+    Color2 = [ColorR,ColorG,ColorB],
+    Color2 == Color,
+    myreplaceC2(Color,Pixeles, RespSig), !. %en donde se remplaza
+myreplaceC2(Color, [Pixel|Pixeles], [Pixel|RespSig]) :-
+    getR(Pixel,ColorR),
+    getG(Pixel,ColorG),
+    getB(Pixel,ColorB),
+    Color2 = [ColorR,ColorG,ColorB],
+    Color2 \= Color,
+    myreplaceC2(Color, Pixeles, RespSig), !. % avanza nomas
+
+/*
+Predicado: imageCompress
+Descripcion: Predicado que comprime una imagen eliminando aquellos píxeles con el color más frecuente, la eliminación
+             se representa con el doble corchete, esto se hace de tal manera de poder conservar los píxeles eliminados.
+Dominio(Argumento de entrada): lista ( image )
+Recorrido(Retorno): lista (la imagen comprimida)
+*/
+imageCompress(Imagen , NewImagen):-
+    imageIsHexmap(Imagen),
+    imageToHistogram(Imagen , Histogram),
+    getmayorhistogram(Histogram, MayorHistogram),
+    obtposicion(1,MayorHistogram, Color),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixeles(Imagen , Pixeles),
+    myreplaceC1(Color , Pixeles , NewPixeles),
+    NewImagen = [AnchoImage , AltoImage , NewPixeles] ,! ;
+    imageIsBitmap(Imagen),
+    imageToHistogram(Imagen , Histogram1),
+    getmayorhistogram(Histogram1, MayorHistogram1),
+    obtposicion(1,MayorHistogram1,Color1),
+    obtposicion(1,Imagen,AnchoImage1),
+    obtposicion(2,Imagen,AltoImage1),
+    pixeles(Imagen , Pixeles1),
+    myreplaceC1(Color1 , Pixeles1 , NewPixeles1),
+    NewImagen = [AnchoImage1, AltoImage1 , NewPixeles1] ,! ;
+    imageIsPixmap(Imagen),
+    imageToHistogram(Imagen , Histogram2),
+    getmayorhistogram(Histogram2, MayorHistogram2),
+    obtposicion(1,MayorHistogram2,Color2),
+    obtposicion(1,Imagen,AnchoImage2),
+    obtposicion(2,Imagen,AltoImage2),
+    pixeles(Imagen , Pixeles2),
+    myreplaceC2( Color2, Pixeles2 , NewPixeles2),
+    NewImagen = [AnchoImage2, AltoImage2 , NewPixeles2].
