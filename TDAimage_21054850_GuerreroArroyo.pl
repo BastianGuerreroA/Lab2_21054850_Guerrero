@@ -95,6 +95,7 @@ TDA image:
     imageToHistogram(Imagen,Histogram).
     imageRotate90(Imagen,NewImagen).
     imageCompress(Imagen , NewImagen).
+    imageChangePixel( Imagen , Pixel , NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -103,14 +104,14 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB.
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
     getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
     histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
-    myreplaceC1 , myreplaceC2 ,getmayorhistogram.
+    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel.
 
 */
 
@@ -1064,3 +1065,49 @@ imageCompress(Imagen , NewImagen):-
     pixeles(Imagen , Pixeles2),
     myreplaceC2( Color2, Pixeles2 , NewPixeles2),
     NewImagen = [AnchoImage2, AltoImage2 , NewPixeles2].
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageChangePixel-----------------------------
+ * ----------------------------------------------------------------------
+*/
+
+
+/*
+Predicado: myreplacepixel
+Descripcion: Predicado que busca el pixel que se quiere remplazar por medio de su posición y se sustituye por el nuevo pixel.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista(Pixel) , lista (Pixeles).
+Recorrido(Retorno): lista(Nueva lista de Pixeles).
+*/
+myreplacepixel(_, [], []):- !. %caso base 1
+myreplacepixel(Pixel, [Pixel2|Pixeles], [Pixel|Pixeles]) :- % caso base 2 ,Donde se remplaza
+    obtposicion(1,Pixel,AltoPixel1),
+    obtposicion(2,Pixel,AnchoPixel1),
+    obtposicion(1,Pixel2,AltoPixel2),
+    obtposicion(2,Pixel2,AnchoPixel2),
+    AltoPixel1 == AltoPixel2 ,
+    AnchoPixel1 == AnchoPixel2,!.
+myreplacepixel(Pixel, [Pixel2|Pixeles], [Pixel2|RespSig]) :-
+    obtposicion(1,Pixel,AltoPixel1),
+    obtposicion(1,Pixel2,AltoPixel2),
+    AltoPixel1 \= AltoPixel2 ,
+    myreplacepixel(Pixel, Pixeles, RespSig) ,!;
+    obtposicion(2,Pixel,AnchoPixel1),
+    obtposicion(2,Pixel2,AnchoPixel2),
+    AnchoPixel1 \= AnchoPixel2 ,
+    myreplacepixel(Pixel, Pixeles, RespSig).
+
+
+/*
+Predicado: imageChangePixel
+Descripcion: Predicado permite reemplazar un píxel en una imagen.
+Dominio(Argumento de entrada): lista ( image ) , lista ( Pixel).
+Recorrido(Retorno): lista (Nueva imagen con el pixel reemplazado).
+*/
+imageChangePixel( Imagen , Pixel , NewImagen):-
+    obtposicion(1,Imagen,AnchoImagen),
+    obtposicion(2,Imagen,AltoImagen),
+    pixeles(Imagen , Pixeles),
+    myreplacepixel(Pixel , Pixeles , Newpixeles),
+    NewImagen = [AnchoImagen , AltoImagen , Newpixeles].
