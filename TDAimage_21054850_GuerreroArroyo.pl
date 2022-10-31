@@ -96,6 +96,8 @@ TDA image:
     imageRotate90(Imagen,NewImagen).
     imageCompress(Imagen , NewImagen).
     imageChangePixel( Imagen , Pixel , NewImagen).
+    imageInvertColorRGB(Pixel , NewPixel).
+
 */
 
 %----------------------------------------------------------------------
@@ -104,14 +106,14 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel.
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
     getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
     histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
-    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel.
+    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel,invertirRGB.
 
 */
 
@@ -872,7 +874,7 @@ conteopixelRGB(Pixel,[Pixel2|Pixeles],RespContador):-
 Predicado: limpieza
 Descripcion: Predicado en el cual compara los colores de los pixeles ingresados para verificar si son iguales o no.
 Dominio(Argumento de entrada): lista ( Pixel) , lista ( Pixel).
-Recorrido(Retorno): Booleano..
+Recorrido(Retorno): Booleano.
 */
 limpieza2(Pixel,Pixel2):-
     getR(Pixel,ColorR1),
@@ -1111,3 +1113,39 @@ imageChangePixel( Imagen , Pixel , NewImagen):-
     pixeles(Imagen , Pixeles),
     myreplacepixel(Pixel , Pixeles , Newpixeles),
     NewImagen = [AnchoImagen , AltoImagen , Newpixeles].
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageInvertColorRGB--------------------------
+ * ----------------------------------------------------------------------
+*/
+
+
+/*
+Predicado: invertirRGB
+Descripcion: Predicado que permite cambiar un color a su opuesto.
+Dominio(Argumento de entrada): Numero.
+Recorrido(Retorno): Numero.
+*/
+invertirRGB(Numero , Numero2):-
+    Numero2 is 255-Numero.
+
+
+/*
+Predicado: imageInvertColorRGB
+Descripcion: Predicado que permite obtener el color simétricamente opuesto en cada canal dentro de un pixel.
+Dominio(Argumento de entrada): lista ( Pixel).
+Recorrido(Retorno): lista (Nuevo Pixel).
+*/
+imageInvertColorRGB(Pixel , NewPixel):-
+    obtposicion(1,Pixel,AltoPixel),
+    obtposicion(2,Pixel,AnchoPixel),
+    getR(Pixel,ColorR),
+    getG(Pixel,ColorG),
+    getB(Pixel,ColorB),
+    obtposicion(6,Pixel,Depth),
+    invertirRGB(ColorR , ColorR2),
+    invertirRGB(ColorG , ColorG2),
+    invertirRGB(ColorB , ColorB2),
+    NewPixel = [AltoPixel , AnchoPixel  , ColorR2 , ColorG2 ,ColorB2 , Depth].
