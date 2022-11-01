@@ -58,6 +58,9 @@ color: Es el color de un pixel Bit o Hex, por ende este puede ser un numero o St
 ImagenFlip: Lista , en el cual hace refencia al resultado de aplicarle un Flip a un imagen.
 MayorHistogram: Lista , que contiene el un color y su frecuencia en la imagen.
 Colorf: Lista , que contiene el un color y su frecuencia en la imagen.
+ListColor: Lista , en el que cuantiene los colores de un Alto en especifica.
+ListsColor: Lista ,  en el cual contiene todos los colores de la imagen, todos los Altos estan separado en listas y ordenados creciente.
+Acum: Numero , en el cual se ocupara para ir incrementando su valor.
 */
 
 %----------------------------------------------------------------------
@@ -97,7 +100,7 @@ TDA image:
     imageCompress(Imagen , NewImagen).
     imageChangePixel( Imagen , Pixel , NewImagen).
     imageInvertColorRGB(Pixel , NewPixel).
-
+    imageToString(Imagen , String).
 */
 
 %----------------------------------------------------------------------
@@ -106,14 +109,15 @@ TDA image:
 /*
 Principales:
     pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB.
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB ,imageToString.
 
 Segundarias:
     pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
     pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
     getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
     histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
-    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel,invertirRGB.
+    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel,invertirRGB , setpixelalto , setpixelancho
+    , igualpixel , listasString ,listString , listasString2 ,listString2.
 
 */
 
@@ -1149,3 +1153,134 @@ imageInvertColorRGB(Pixel , NewPixel):-
     invertirRGB(ColorG , ColorG2),
     invertirRGB(ColorB , ColorB2),
     NewPixel = [AltoPixel , AnchoPixel  , ColorR2 , ColorG2 ,ColorB2 , Depth].
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageToString--------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+/*
+Predicado: igualpixel
+Descripcion: Predicado que retorna True si el pixel tiene el mismo ancho y alto ingresado.
+Dominio(Argumento de entrada): Numero(Alto),Numero(Ancho),lista (Pixel).
+Recorrido(Retorno): Booleano.
+*/
+igualpixel(AltoPixel,AnchoPixel , Pixel):-
+    obtposicion(1,Pixel,AltoPixel2),
+    obtposicion(2,Pixel,AnchoPixel2),
+    AltoPixel == AltoPixel2,
+    AnchoPixel == AnchoPixel2.
+
+/*
+Predicado: setpixelancho
+Descripcion: Predicado que permite ir avanzando el parametro de ancho y por ende obtiene los colores de una fila(alto).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto fijo), Numero(AnchoImage) , Numero (Acum).
+Recorrido(Retorno): Lista( ListColor).
+*/
+setpixelancho(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
+setpixelancho(Pixeles , Alto , AnchoImage , Acum , [Color|RespSig]):-
+    Acum2 is Acum+1,
+    setpixelancho(Pixeles , Alto , AnchoImage , Acum2 , RespSig),
+    include(igualpixel(Alto,Acum) , Pixeles , Pixeles2 ),
+    obtposicion(1,Pixeles2, Pixel),
+    obtposicion(3,Pixel, Color).
+
+/*
+Predicado: setpixelalto
+Descripcion: Predicado que permite ir avanzando el parametro de alto , permite obtener todos los colores de un alto en especifico.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(AnchoImage) , Numero(AltoImage) , Numero (Acum).
+Recorrido(Retorno): Lista( ListsColor).
+*/
+setpixelalto(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
+setpixelalto(Pixeles, AnchoImage , AltoImage , Acum , [ListColor|RespSig]):-
+    Acum2 is Acum+1,
+    setpixelalto(Pixeles , AnchoImage , AltoImage , Acum2 , RespSig),
+    setpixelancho(Pixeles,Acum,AnchoImage,0,ListColor).
+
+/*
+Predicado: listString
+Descripcion: Predicado que toma una lista de colores ( bit ) y los transforma a la representacion string.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListColor).
+Recorrido(Retorno): String.
+*/
+liststring([],""):- !.
+liststring([Color|ListColor], String):-
+    number_string(Color ,String2),
+    string_concat(String2 , " " , String3),
+    liststring(ListColor, RespSig),
+    string_concat(String3 , RespSig , String).
+
+/*
+Predicado: listasString
+Descripcion: Predicado que permite ir avanzando entre las listas de los colores , con la finalidad de ir tranformandolos a la representacion String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListsColor).
+Recorrido(Retorno): String.
+*/
+listasString([],""):- !.
+listasString([ListColor|ListsColor] , String):-
+    liststring(ListColor, String1),
+    listasString(ListsColor , RespSig),
+    string_concat(String1 , "\n" , String2),
+    string_concat(String2 , RespSig , String).
+
+%------------------------------------------------
+
+/*
+Predicado: listString2
+Descripcion: Predicado que toma una lista de colores ( Hexadecimal ) y los transforma a la representacion string.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListColor).
+Recorrido(Retorno): String.
+*/
+liststring2([],""):- !.
+liststring2([Color|ListColor], String):-
+    string_concat(Color , " " , String3),
+    liststring2(ListColor, RespSig),
+    string_concat(String3 , RespSig , String).
+
+/*
+Predicado: listasString2
+Descripcion: Predicado que permite ir avanzando entre las listas de los colores , con la finalidad de ir tranformandolos a la representacion String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListsColor).
+Recorrido(Retorno): String.
+*/
+listasString2([],""):- !.
+listasString2([ListColor|ListsColor] , String):-
+    liststring2(ListColor, String1),
+    listasString2(ListsColor , RespSig),
+    string_concat(String1 , "\n" , String2),
+    string_concat(String2 , RespSig , String).
+
+
+/*
+Predicado: imageToString
+Descripcion: Predicado que transforma una imagen a una representación string.
+Dominio(Argumento de entrada): lista(Imagen).
+Recorrido(Retorno): String.
+*/
+imageToString(Imagen , String):-
+    imageIsHexmap(Imagen),
+    obtposicion(1,Imagen, AnchoImage),
+    obtposicion(2,Imagen, AltoImage),
+    pixeles(Imagen,Pixeles),
+    setpixelalto(Pixeles, AnchoImage , AltoImage , 0 , ListsColor),
+    listasString2(ListsColor , String), ! ;
+    imageIsBitmap(Imagen),
+    obtposicion(1,Imagen, Ancho1),
+    obtposicion(2,Imagen, Alto1),
+    pixeles(Imagen,Pixeles1),
+    setpixelalto(Pixeles1, Ancho1 , Alto1 , 0 , ListsColor1),
+    listasString(ListsColor1 , String), !;
+    imageIsPixmap(Imagen),
+    imageRGBToHex(Imagen , Imagen2),
+    obtposicion(1,Imagen2, Ancho2),
+    obtposicion(2,Imagen2, Alto2),
+    pixeles(Imagen2,Pixeles2),
+    setpixelalto(Pixeles2, Ancho2 , Alto2 , 0 , ListsColor2),
+    listasString2(ListsColor2 , String).
