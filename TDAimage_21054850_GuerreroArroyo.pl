@@ -1,3 +1,8 @@
+:- include(tdaPixbit_21054850_GuerreroArroyo).
+:- include(tdaPixhex_21054850_GuerreroArroyo).
+:- include(tdaPixrgb_21054850_GuerreroArroyo).
+
+
 %domains
 /*
 Dato: Hay dominios en el cual pueden tener el mismo nombre pero con un numero agregado al final, se hace con la finalidad de diferenciarlos, pero tienen el mismo significado.
@@ -61,29 +66,19 @@ Colorf: Lista , que contiene el un color y su frecuencia en la imagen.
 ListColor: Lista , en el que cuantiene los colores de un Alto en especifica.
 ListsColor: Lista ,  en el cual contiene todos los colores de la imagen, todos los Altos estan separado en listas y ordenados creciente.
 Acum: Numero , en el cual se ocupara para ir incrementando su valor.
+ListDL: lista , contiene listas de imagenes separados por profundidad.
+listPixelxdepth: lista, el cual contiene los pixeles separados por profundidad.
+listPixelDepth: lista , el cual contiene pixeles en una profundidad.
+Posicion: Lista, el cual solo da prioridad a las posiciones de ancho y alto.
+PixelCompress: Lista , en el cual contiene un pixel.
+
 */
+
 
 %----------------------------------------------------------------------
 
 %predicates
 /*
-TDA pixbit:
-    pixbit_d(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]).
-    getbit(Pixel,Bit).
-    bit(Bit).
-    pixbit(Pixel).
-
-TDA pixhex:
-    pixhex_d(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]).
-    getHex(Pixel,Hex).
-    pixhex(Pixel).
-
-TDA pixrgb:
-    pixrgb_d(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth]).
-    getR(Pixel,ColorR).
-    getG(Pixel,ColorG).
-    getB(Pixel,ColorB).
-    pixRGB(Pixel).
 
 TDA image:
     image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen).
@@ -101,6 +96,8 @@ TDA image:
     imageChangePixel( Imagen , Pixel , NewImagen).
     imageInvertColorRGB(Pixel , NewPixel).
     imageToString(Imagen , String).
+    imageDepthLayers(Imagen,ListDL).
+    imageDecompress(Imagen , NewImagen).
 */
 
 %----------------------------------------------------------------------
@@ -108,18 +105,22 @@ TDA image:
 %goals
 /*
 Principales:
-    pixbit_d , pixhex_d , image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
-    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB ,imageToString.
+    image , imageIsBitmap , imageIsPixmap ,imageIsHexmap , imageIsCompressed , imageFlipH , imageFlipV,
+    imageCrop,imageRGBToHex , imageToHistogram ,imageRotate90, imageCompress , imageChangePixel,imageInvertColorRGB ,imageToString,
+    ,imageDepthLayers , imageDecompress.
 
-Segundarias:
-    pixeles , obtposicion , contador , getbit , bit, pixbit, getHex, pixhex, pixRGB , getR, getG, getB ,pixelesbit ,
-    pixelesRGB , pixelesHex , contadorpixeles , pixflipH , flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between ,
-    getmenor , valorabsoluto, pixstring , pixelstring , numberstring , numberstring2 , divbase16 , num_string ,
-    histogram , limpieza ,conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
-    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel,invertirRGB , setpixelalto , setpixelancho
-    , igualpixel , listasString ,listString , listasString2 ,listString2.
+secundario:
+    pixeles , obtposicion , contador, pixelesbit , pixelesRGB , pixelesHex , contadorpixeles , pixflipH ,
+    flipH ,pixflipV , flipV ,crop_pixels , cambiocrop ,between , getmenor , valorabsoluto, pixstring ,
+    pixelstring , numberstring , numberstring2 , divbase16 , num_string , histogram , limpieza ,
+    conteopixe , histogramRGB , limpieza2 ,conteopixelRGB ,cambiaparametros , cambiopix ,
+    myreplaceC1 , myreplaceC2 ,getmayorhistogram ,  myreplacepixel,invertirRGB , setpixelalto , setpixelancho,
+    igualpixel , listasString ,listString , listasString2 ,listString2 ,xprofundidad , profundi , profundi2 , getpixel ,
+    imagenes , imagenes2 , imagenes3 , getpixelalto1 , getpixelalto2 , getpixelalto3 ,getpixelancho1 , getpixelancho2 , getpixelancho3,
+    myreplaceDeCom .
 
 */
+
 
 %----------------------------------------------------------------------
 
@@ -170,190 +171,10 @@ Recorrido(Retorno): Numero.
 contador([],0):- !.
 contador([_|Cola],Contador):- contador(Cola,RespSig), Contador is RespSig+1.
 
-
 /*
  * ----------------------------------------------------------------------
  *
- * ---------------------[ TDA pixbit ]-----------------------------------
- *
- * ----------------------------------------------------------------------
-*/
-
-%Constructor de pixel bit
-/*
-Predicado: pixbit_d
-Descripción: Predicado contructor, en el cual verifica las condiciones para un pixbit y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero, Numero.
-Recorrido(Retorno): Lista (representación del pixbit).
-*/
-pixbit_d(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]):-
-    number(AltoPixel),
-    number(AnchoPixel),
-    number(Bit),
-    number(Depth),
-    AltoPixel >= 0,
-    AnchoPixel >= 0,
-    bit(Bit),
-    Depth >= 0 .
-
-%Predicados selectoras
-
-/*
-Predicado: getbit
-Descripción: Entrega el bit de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero ( 0 o 1).
-*/
-getbit(Pixel,Bit):-
-    obtposicion(3,Pixel,Bit).
-
-%Predicados de pertencia
-
-/*
-Predicado: bit
-Descripción: Verifica si el numero ingresado es un bit.
-Dominio(Argumento de entrada): numero.
-Recorrido(Retorno): Booleano.
-*/
-bit(Bit):-
-    number(Bit),
-    Bit = 0, ! ; Bit = 1.
-
-/*
-Predicado: pixbit
-Descripción: Verifica si el pixel ingresado es un pixbit.
-Dominio(Argumento de entrada): Lista(Pixel).
-Recorrido(Retorno): Booleano.
-*/
-
-pixbit(Pixel):-
-    contador(Pixel , RespContador),
-    RespContador == 4,
-    getbit(Pixel,Bit),
-    bit(Bit).
-
-
-/*
- * ----------------------------------------------------------------------
- *
- * ----------------------[ TDA pixhex ]----------------------------------
- *
- * ----------------------------------------------------------------------
-*/
-
-%Constructor de pixel hex
-/*
-Predicado: pixhex_d
-Descripción: Predicado contructor, en el cual verifica las condiciones para un pixhex y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , String , Numero.
-Recorrido(Retorno): Lista (representación del pixHex).
-*/
-pixhex_d(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]):-
-    number(AltoPixel),
-    number(AnchoPixel),
-    string(Hex),
-    number(Depth),
-    AltoPixel >= 0,
-    AnchoPixel >= 0,
-    Depth >= 0 .
-
-%Predicados selectoras
-
-/*
-Predicado: getHex
-Descripción: Entrega el Hexadecimal de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): String.
-*/
-getHex(Pixel,Hex):-
-    obtposicion(3,Pixel,Hex).
-
-%Predicados de pertencia
-/*
-Predicado: pixhex
-Descripción: Verifica si el pixel ingresado es un pixhex.
-Dominio(Argumento de entrada): Lista(Pixel).
-Recorrido(Retorno): Booleano.
-*/
-pixhex(Pixel):-
-    contador(Pixel, RespContador),
-    RespContador == 4,
-    getHex(Pixel,Hex),
-    string(Hex).
-
-/*
- * ----------------------------------------------------------------------
- *
- * ---------------------[ TDA pixrgb ]-----------------------------------
- *
- * ----------------------------------------------------------------------
-*/
-
-%Constructor de pixel RGB
-/*
-Predicado: pixrgb_d
-Descripción: Predicado contructor, en el cual verifica las condiciones para un pixrgb y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero(Color R) , Numero(Color G) , Numero(Color B) , Numero.
-Recorrido(Retorno): Lista (representación del pixrgb).
-*/
-pixrgb_d(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth]):-
-    number(AltoPixel),
-    number(AnchoPixel),
-    number(ColorR),
-    number(ColorG),
-    number(ColorB),
-    number(Depth),
-    AltoPixel >= 0,
-    AnchoPixel >= 0,
-    ColorR >= 0 ,  ColorR =< 255,
-    ColorG >= 0 ,  ColorG =< 255,
-    ColorB >= 0 ,  ColorB =< 255,
-    Depth >= 0 .
-
-%Predicados selectoras
-/*
-Predicado: getR
-Descripción: Entrega el Color R de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
-*/
-getR(Pixel,ColorR):-
-    obtposicion(3,Pixel,ColorR).
-/*
-Predicado: getG
-Descripción: Entrega el Color G de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
-*/
-getG(Pixel,ColorG):-
-    obtposicion(4,Pixel,ColorG).
-
-/*
-Predicado: getB
-Descripción: Entrega el Color B de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
-*/
-getB(Pixel,ColorB):-
-    obtposicion(5,Pixel,ColorB).
-
-%Predicados de pertencia
-
-/*
-Predicado: pixRGB
-Descripción: Verifica si el pixel ingresado es un pixRGB.
-Dominio(Argumento de entrada): Lista(Pixel).
-Recorrido(Retorno): Booleano.
-*/
-pixRGB(Pixel):-
-    contador(Pixel, RespContador),
-    RespContador == 6.
-
-
-/*
- * ----------------------------------------------------------------------
- *
- * ---------------------[ TDA image ]------------------------------------
+ * -----------------------------[ TDA image ]----------------------------
  *
  * ----------------------------------------------------------------------
 */
@@ -612,8 +433,8 @@ Dominio(Argumento de entrada): Numero(X1), Numero(Y1),Numero(X2), Numero(Y2), Li
 Recorrido(Retorno): Booleano.
 */
 between(X1,Y1,X2,Y2,[AltoPixel , AnchoPixel|_]):-
-    AltoPixel >= Y1 , AltoPixel =< Y2 , ! ; AltoPixel =< Y1 , AltoPixel >= Y2 ,
-    AnchoPixel >= X1 , AnchoPixel =< X2 , ! ; AnchoPixel =< X1 , AnchoPixel >= X2 .
+    AltoPixel >= Y1 , AltoPixel =< Y2 , AnchoPixel >= X1 , AnchoPixel =< X2 , ! ;
+    AltoPixel =< Y1 , AltoPixel >= Y2 , AnchoPixel =< X1 , AnchoPixel >= X2.
 
 /*
 Predicado: getmenor
@@ -1284,3 +1105,292 @@ imageToString(Imagen , String):-
     pixeles(Imagen2,Pixeles2),
     setpixelalto(Pixeles2, Ancho2 , Alto2 , 0 , ListsColor2),
     listasString2(ListsColor2 , String).
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageDepthLayers-----------------------------
+ * ----------------------------------------------------------------------
+*/
+
+/*
+Predicado: profundi
+Descripcion: Predicado que retorna true si el pixel bit o hex esta en una profundidad ingresada.
+Dominio(Argumento de entrada): Numero ,lista (Pixel).
+Recorrido(Retorno): Booleano.
+*/
+
+profundi(P , Pixel):-
+    obtposicion(4,Pixel, Profundidad),
+    P == Profundidad.
+
+/*
+Predicado: profundi2
+Descripcion: Predicado que retorna true si el pixel RGB esta en una profundidad ingresada.
+Dominio(Argumento de entrada): Numero ,lista (Pixel).
+Recorrido(Retorno): Booleano.
+*/
+profundi2(P , Pixel):-
+    obtposicion(6,Pixel, Profundidad),
+    P == Profundidad.
+
+/*
+Predicado: xprofundidad
+Descripcion: Predicado que permite separar los pixeles por lista dependiendo de su profundidad.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles).
+Recorrido(Retorno): Lista.
+*/
+xprofundidad([] , []):- !.
+xprofundidad(Pixeles , [Pixeles2|RespSig]):-
+    obtposicion(1,Pixeles, Pixel),
+    pixRGB(Pixel),
+    obtposicion(6,Pixel, Depth),
+    exclude(profundi2(Depth) , Pixeles , Pixeles1),
+    xprofundidad(Pixeles1, RespSig),
+    include(profundi2(Depth) , Pixeles , Pixeles2), !;
+    obtposicion(1,Pixeles, Pixel1),
+    obtposicion(4,Pixel1, Depth1),
+    exclude(profundi(Depth1) , Pixeles , Pixeles3),
+    xprofundidad(Pixeles3, RespSig),
+    include(profundi(Depth1) , Pixeles , Pixeles2).
+
+/*
+Predicado: getpixel
+Descripcion: Predicado que permite obtener el pixel que se encuentra en un alto y ancho especifico.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Posicion a buscar ej: [1, 0 , _ , _ ]) , lista (Pixeles).
+Recorrido(Retorno): Lista(Pixel).
+*/
+getpixel(_, [], []):- !.
+getpixel(Posicion, [Pixel|_], R) :- Posicion =Pixel , R = Pixel, !.
+getpixel(Posicion, [Pixel|Pixeles], R) :- Posicion \= Pixel, getpixel(Posicion, Pixeles, R), !.
+
+%-----------------------------------------------------------------
+
+%caso para bit
+
+/*
+Predicado: getpixelancho1
+Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixel).
+*/
+getpixelancho1(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
+getpixelancho1(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
+    obtposicion(1,Pixeles,Pixel),
+    obtposicion(4,Pixel,Depth),
+    not(member([AltoPixel , Acum ,_ , _ ] , Pixeles)),
+    Acum2 is Acum+1,
+    getpixelancho1(Pixeles , AltoPixel , AnchoImage , Acum2 , RespSig),
+    Pixel3 = [AltoPixel , Acum , 1 , Depth] , !;
+    member([AltoPixel , Acum ,_ , _ ] , Pixeles),
+    Acum2 is Acum+1,
+    getpixelancho1(Pixeles , AltoPixel ,  AnchoImage , Acum2 , RespSig),
+    getpixel([AltoPixel,Acum,_,_] , Pixeles, Pixel3), !.
+
+/*
+Predicado: getpixelalto1
+Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixeles).
+*/
+
+getpixelalto1(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
+getpixelalto1(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
+    Acum2 is Acum+1,
+    getpixelalto1(Pixeles , AnchoImage , AltoImage , Acum2 , RespSig),
+    getpixelancho1(Pixeles,Acum,AnchoImage,0,Pixeles2),
+    append(Pixeles2, RespSig , ListPixelDepth).
+
+/*
+Predicado: imagenes
+Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
+Recorrido(Retorno): Lista(Imagenes).
+*/
+
+imagenes([],_,_,[]):- !.
+imagenes([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig]):-
+    getpixelalto1(ListPixelDepth, AnchoImage ,AltoImage ,0 , ListPixelDepth2),
+    imagenes(ListPixelxdepth , AnchoImage , AltoImage , RespSig),
+    Imagen = [AnchoImage , AltoImage , ListPixelDepth2].
+
+%-----------------------------------------------------------------
+
+
+%caso para RGB
+/*
+Predicado: getpixelancho2
+Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixel).
+*/
+getpixelancho2(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
+getpixelancho2(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
+    obtposicion(1,Pixeles,Pixel),
+    obtposicion(6,Pixel,Depth),
+    not(member([AltoPixel , Acum ,_ , _ ,_,_] , Pixeles)),
+    Acum2 is Acum+1,
+    getpixelancho2(Pixeles , AltoPixel , AnchoImage , Acum2 , RespSig),
+    Pixel3 = [AltoPixel , Acum , 255, 255, 255 , Depth] , !;
+    member([AltoPixel , Acum ,_ , _ ,_,_] , Pixeles),
+    Acum2 is Acum+1,
+    getpixelancho2(Pixeles , AltoPixel , AnchoImage , Acum2 , RespSig),
+    getpixel([AltoPixel,Acum,_,_,_,_] , Pixeles, Pixel3), !.
+
+
+/*
+Predicado: getpixelalto2
+Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixeles).
+*/
+getpixelalto2(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
+getpixelalto2(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
+    Acum2 is Acum+1,
+    getpixelalto2(Pixeles , AnchoImage , AltoImage , Acum2 , RespSig),
+    getpixelancho2(Pixeles,Acum,AnchoImage,0,Pixeles2),
+    append(Pixeles2, RespSig , ListPixelDepth).
+
+
+/*
+Predicado: imagenes2
+Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
+Recorrido(Retorno): Lista(Imagenes).
+*/
+imagenes2([],_,_,[]):- !.
+imagenes2([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig]):-
+    getpixelalto2(ListPixelDepth, AnchoImage ,AltoImage ,0 , ListPixelDepth2),
+    imagenes2(ListPixelxdepth , AnchoImage , AltoImage , RespSig),
+    Imagen = [AnchoImage , AltoImage , ListPixelDepth2].
+
+
+%-----------------------------------------------------------------
+
+%caso para Hex
+
+/*
+Predicado: getpixelancho3
+Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixel).
+*/
+getpixelancho3(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
+getpixelancho3(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
+    obtposicion(1,Pixeles,Pixel),
+    obtposicion(4,Pixel,Depth),
+    not(member([AltoPixel , Acum ,_ , _ ] , Pixeles)),
+    Acum2 is Acum+1,
+    getpixelancho3(Pixeles , AltoPixel , AnchoImage , Acum2 , RespSig),
+    Pixel3 = [AltoPixel , Acum , "FFFFFF" , Depth] , !;
+    member([AltoPixel , Acum ,_ , _ ] , Pixeles),
+    Acum2 is Acum+1,
+    getpixelancho3(Pixeles , AltoPixel , AnchoImage , Acum2 , RespSig),
+    getpixel([AltoPixel,Acum,_,_] , Pixeles, Pixel3), !.
+
+/*
+Predicado: getpixelalto3
+Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
+Recorrido(Retorno): Lista(Pixeles).
+*/
+getpixelalto3(_,_,Alto,Acum,[]):- Alto == Acum ,!.
+getpixelalto3(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
+    Acum2 is Acum+1,
+    getpixelalto3(Pixeles , AnchoImage , AltoImage , Acum2 , RespSig),
+    getpixelancho3(Pixeles,Acum,AnchoImage,0,Pixeles2),
+    append(Pixeles2, RespSig , ListPixelDepth).
+
+
+/*
+Predicado: imagenes3
+Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
+Recorrido(Retorno): Lista(Imagenes).
+*/
+imagenes3([],_,_,[]):- !.
+imagenes3([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig]):-
+    getpixelalto3(ListPixelDepth, AnchoImage ,AltoImage ,0 , ListPixelDepth2),
+    imagenes3(ListPixelxdepth , AnchoImage , AltoImage , RespSig),
+    Imagen = [AnchoImage , AltoImage , ListPixelDepth2].
+
+%-----------------------------------------------------------------
+
+
+/*
+Predicado: imageDepthLayers
+Descripcion: Predicado que permite separar una imágen en capas en base a la profundidad en que se sitúan los pixeles.
+Dominio(Argumento de entrada): lista (imagen).
+Recorrido(Retorno): Lista(ImagenesXprofundidades).
+*/
+imageDepthLayers(Imagen,ListDL):-
+    imageIsPixmap(Imagen),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixeles(Imagen,Pixeles),
+    xprofundidad(Pixeles , ListPixelxdepth),
+    imagenes2(ListPixelxdepth , AnchoImage, AltoImage , ListDL), !;
+    imageIsHexmap(Imagen),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixeles(Imagen,Pixeles),
+    xprofundidad(Pixeles , ListPixelxdepth),
+    imagenes3(ListPixelxdepth , AnchoImage, AltoImage , ListDL), !;
+    imageIsBitmap(Imagen),
+    obtposicion(1,Imagen,AnchoImage),
+    obtposicion(2,Imagen,AltoImage),
+    pixeles(Imagen,Pixeles),
+    xprofundidad(Pixeles , ListPixelxdepth),
+    imagenes(ListPixelxdepth , AnchoImage, AltoImage , ListDL).
+
+
+/*
+ * ----------------------------------------------------------------------
+ * -------------------------imageDecompress------------------------------
+ * ----------------------------------------------------------------------
+*/
+
+
+/*
+Predicado: myreplaceDeCom
+Descripcion: Predicado que permite ir avanzando pixel por pixel, verificando si estos estan dentro de otra lista , en caso de que sea asi, le saca los corchetes.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles).
+Recorrido(Retorno): Lista(Pixeles descomprimidos).
+*/
+myreplaceDeCom([], []):- !.%caso base
+myreplaceDeCom([PixelCompress|Pixeles], [Pixel|RespSig]) :-
+    contador(PixelCompress ,  RespContador),
+    RespContador == 1,
+    obtposicion(1,PixelCompress,Pixel),
+    myreplaceDeCom(Pixeles, RespSig), !.
+myreplaceDeCom([Pixel|Pixeles], [Pixel|RespSig]) :-
+    contador(Pixel , RespContador),
+    RespContador > 1,
+    myreplaceDeCom(Pixeles, RespSig), !.
+
+
+/*
+Predicado: imageDecompress
+Descripcion: Predicado que permite descomprimir una imágen comprimida.
+Dominio(Argumento de entrada): lista (Imagen).
+Recorrido(Retorno): Lista (Nueva Imagen).
+*/
+imageDecompress(Imagen , NewImagen):-
+    obtposicion(1,Imagen, AnchoImage),
+    obtposicion(2,Imagen, AltoImage),
+    pixeles(Imagen,Pixeles),
+    myreplaceDeCom(Pixeles, NewPixeles),
+    NewImagen = [AnchoImage , AltoImage , NewPixeles].
+
