@@ -33,7 +33,7 @@ Principales:
     pixbit.
 
 Secundario:
-	getbit,bit,pixbit,obtposicion1, contador1.
+    getbit,bit,pixbit,obtposicion1, contador1.
 */
 
 /*
@@ -48,8 +48,7 @@ Secundario:
 /*
 Predicado: pixbit
 Descripción: Predicado contructor, en el cual verifica las condiciones para un pixbit y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero, Numero.
-Recorrido(Retorno): Lista (representación del pixbit).
+Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero, Numero , Lista (representación del pixbit).
 */
 pixbit(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]):-
     number(AltoPixel),
@@ -66,8 +65,7 @@ pixbit(AltoPixel,AnchoPixel,Bit,Depth,[AltoPixel,AnchoPixel,Bit,Depth]):-
 /*
 Predicado: getbit
 Descripción: Entrega el bit de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero ( 0 o 1).
+Dominio(Argumento de entrada): Lista (pixel) , Numero ( 0 o 1).
 */
 getbit(Pixel,Bit):-
     obtposicion1(3,Pixel,Bit).
@@ -104,8 +102,7 @@ pixbit(Pixel):-
 Predicado: obtposicion
 Descripción: Te entrega el contenido que se encuentra en la pisicion pedida de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista.
-Recorrido(Retorno): Contenido que se encontraba en la posicion pedida.
+Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista , Contenido que se encontraba en la posicion pedida.
 */
 obtposicion1(1,[Contenido|_],Contenido):- !.
 obtposicion1(Contador,[_|Cola],Contenido):-
@@ -118,8 +115,7 @@ obtposicion1(Contador,[_|Cola],Contenido):-
 Predicado: contador
 Descripción: Entrega el largo de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Lista.
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista, Numero.
 */
 contador1([],0):- !.
 contador1([_|Cola],Contador):- contador1(Cola,RespSig), Contador is RespSig+1.

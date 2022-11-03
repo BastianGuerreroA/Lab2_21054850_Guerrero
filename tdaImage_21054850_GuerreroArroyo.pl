@@ -33,10 +33,10 @@ NewAnchoPixel: Numero , en el cual surge de la modificacion del ancho de un pixe
 NweAltoPixel: Numero , en el cual surge de la modificacion del Alto de un pixel.
 NewAnchoImage: Numero positivo, en el cual hace referencia al nuevo ancho de la imagen que se retornara.
 NewAltoImage: Numero positivo, en el cual hace referencia al nuevo alto de la imagen que se retornara.
-X1: Numero >=0 , Representa la coordenada x (ancho) de una primera posiciÃ³n.
-Y1: Numero >=0 , Representa la coordenada y (alto) de una primera posiciÃ³n.
-X2: Numero >=0 , Representa la coordenada x (ancho) de una segunda posiciÃ³n.
-Y2: Numero >=0 , Representa la coordenada y (alto) de una segunda posiciÃ³n.
+X1: Numero >=0 , Representa la coordenada x (ancho) de una primera posición.
+Y1: Numero >=0 , Representa la coordenada y (alto) de una primera posición.
+X2: Numero >=0 , Representa la coordenada x (ancho) de una segunda posición.
+Y2: Numero >=0 , Representa la coordenada y (alto) de una segunda posición.
 AnchoTemp: Numero , en el cual este sera nuevamente modificado.
 AltoTemp: Numero , en el cual este sera nuevamente modificado.
 MenorX: Numero >= 0 , representa al menor ancho entre 2 entregados.
@@ -137,20 +137,18 @@ secundario:
 
 /*
 Predicado: pixeles
-DescripciÃ³n: Busca el ultimo elemento de la lista , en el cual este seria la lista de pixeles de la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): Imagen(Lista).
-Recorrido(Retorno): Pixeles(Lista).
+Descripción: Busca el ultimo elemento de la lista , en el cual este seria la lista de pixeles de la imagen.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Imagen(Lista), Pixeles(Lista) .
 */
 pixeles( [Pixeles] , Pixeles):- true , !.
 pixeles( [_|AltoImage], Pixeles):- pixeles(AltoImage,Pixeles).
 
 /*
 Predicado: obtposicion
-DescripciÃ³n: Te entrega el contenido que se encuentra en la pisicion pedida de una lista.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista.
-Recorrido(Retorno): Contenido que se encontraba en la posicion pedida.
+Descripción: Te entrega el contenido que se encuentra en la pisicion pedida de una lista.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista , Contenido que se encontraba en la posicion pedida.
 */
 obtposicion(1,[Contenido|_],Contenido):- !.
 obtposicion(Contador,[_|Cola],Contenido):-
@@ -163,10 +161,9 @@ obtposicion(Contador,[_|Cola],Contenido):-
 
 /*
 Predicado: contador
-DescripciÃ³n: Entrega el largo de una lista.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): Lista.
-Recorrido(Retorno): Numero.
+Descripción: Entrega el largo de una lista.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Lista,Numero.
 */
 contador([],0):- !.
 contador([_|Cola],Contador):- contador(Cola,RespSig), Contador is RespSig+1.
@@ -190,10 +187,9 @@ contador([_|Cola],Contador):- contador(Cola,RespSig), Contador is RespSig+1.
 
 /*
 Predicado: image
-Descripcion: Predicado contructora de imÃ¡genes, en el cual crea una imagen, verificando las condiciones
+Descripcion: Predicado contructora de imágenes, en el cual crea una imagen, verificando las condiciones
              para que esta sea retornada de manera representativa en forma de lista.
-Dominio(Argumento de entrada): Width (int) X Height (int) X Pixeles (pixbit-d |  pixrgb-d | pixhex-d) .
-Recorrido(Retorno): lista (De la forma: [2,2,[[0,0,1,10], [0,1,0,20], [1,0 ,1 ,30], [1,1,0, 40]]] ) .
+Dominio(Argumento de entrada): Width (int) X Height (int) X Pixeles (pixbit-d |  pixrgb-d | pixhex-d) X Image(De la forma: [2,2,[[0,0,1,10], [0,1,0,20], [1,0 ,1 ,30], [1,1,0, 40]]] ).
 */
 image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen):-
     number(AnchoImage),
@@ -212,7 +208,7 @@ image(AnchoImage , AltoImage , [Cabeza|Cola] , Imagen):-
 /*
 Predicado: pixelesbit
 Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixbit.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
+Tipo de algoritmo/estrategia: Recursión.
 Dominio(Argumento de entrada): lista (Pixeles).
 Recorrido(Retorno): Booleano.
 */
@@ -225,7 +221,7 @@ pixelesbit([Pixel|Pixeles]):-
 /*
 Predicado: imageIsBitmap
 Descripcion: Predicado que permite determinar si la imagen corresponde a un bitmap-d
-Dominio(Argumento de entrada): lista ( La representaciÃ³n  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
 Recorrido(Retorno): Booleano.
 */
 imageIsBitmap(Imagen):-
@@ -241,7 +237,7 @@ imageIsBitmap(Imagen):-
 /*
 Predicado: pixelesRGB
 Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixrgb.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
+Tipo de algoritmo/estrategia: Recursión.
 Dominio(Argumento de entrada): lista (Pixeles).
 Recorrido(Retorno): Booleano.
 */
@@ -253,7 +249,7 @@ pixelesRGB([Pixel|Pixeles]):-
 /*
 Predicado: imageIsPixmap
 Descripcion: Predicado que permite determinar si la imagen corresponde a un pixmap-d.
-Dominio(Argumento de entrada): lista ( La representaciÃ³n  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
 Recorrido(Retorno): Booleano.
 */
 imageIsPixmap(Imagen):-
@@ -270,7 +266,7 @@ imageIsPixmap(Imagen):-
 /*
 Predicado: pixelesHex
 Descripcion: Predicado que revisa pixel por pixel, verificando que esta correspondan a un pixhex.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
+Tipo de algoritmo/estrategia: Recursión.
 Dominio(Argumento de entrada): lista (Pixeles).
 Recorrido(Retorno): Booleano.
 */
@@ -282,7 +278,7 @@ pixelesHex([Pixel|Pixeles]):-
 /*
 Predicado: imageIsHexmap
 Descripcion: Predicado que permite determinar si la imagen corresponde a un pixhex-d.
-Dominio(Argumento de entrada): lista ( La representaciÃ³n  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
 Recorrido(Retorno): Booleano.
 */
 imageIsHexmap(Imagen):-
@@ -300,9 +296,8 @@ imageIsHexmap(Imagen):-
 /*
 Predicado: contadorpixeles
 Descripcion: Cuenta los pixeles que no estan comprimidos, osea que no esten dentro de otra lista.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): lista ( Pixeles).
-Recorrido(Retorno): Numero.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles), Numero.
 */
 contadorpixeles([],0):- !.
 contadorpixeles([Pixel|Pixeles],RespContador):-
@@ -317,9 +312,9 @@ contadorpixeles([Pixel|Pixeles],RespContador):-
 
 /*
 Predicado: imageIsCompressed
-Descripcion: Predicado que determina si una imagen estÃ¡ comprimida, a travÃ©s
-             de la comporaciÃ³n entre el area de la imagen con la cantidad de pixeles de esta.
-Dominio(Argumento de entrada): lista ( La representaciÃ³n  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
+Descripcion: Predicado que determina si una imagen está comprimida, a través
+             de la comporación entre el area de la imagen con la cantidad de pixeles de esta.
+Dominio(Argumento de entrada): lista ( La representación  de la imagen, ej : [1,1 ,[[0,0,1,10]]] ).
 Recorrido(Retorno): Booleano.
 */
 imageIsCompressed(Imagen):-
@@ -339,8 +334,7 @@ imageIsCompressed(Imagen):-
 /*
 Predicado: flipH
 Descripcion: Invierte horizontalmente un pixel , cambiando su ancho.
-Dominio(Argumento de entrada): lista (Pixel) , Numero(Ancho de la imagen).
-Recorrido(Retorno): Lista(Nuevo pixel invertido horizontalmente).
+Dominio(Argumento de entrada): lista (Pixel) , Numero(Ancho de la imagen) , Lista(Nuevo pixel invertido horizontalmente).
 */
 flipH([AltoPixel, AnchoPixel|Cola],AnchoImage,NewPixel):-
     NewAnchoPixel is ((AnchoImage-1)- AnchoPixel),
@@ -349,9 +343,8 @@ flipH([AltoPixel, AnchoPixel|Cola],AnchoImage,NewPixel):-
 /*
 Predicado: pixflipH
 Descripcion: Predicado que invierte horizonalmente pixel por pixel , cambiando su ancho.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Ancho de la imagen).
-Recorrido(Retorno): lista(Nueva lista de pixeles).
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Ancho de la imagen) , lista(Nueva lista de pixeles).
 */
 
 pixflipH([],_,[]).
@@ -363,9 +356,8 @@ pixflipH([Pixel|Pixeles],AnchoImage,[NewPixel|RespSig]):-
 
 /*
 Predicado: imageFlipH
-Descripcion: Predicado que permite invertir una imÃ¡gen horizontalmente, a traves del cambio de la variable ancho.
-Dominio(Argumento de entrada): lista ( image )
-Recorrido(Retorno): lista (la representaciÃ³n de la imagen invertida horizontalmente)
+Descripcion: Predicado que permite invertir una imágen horizontalmente, a traves del cambio de la variable ancho.
+Dominio(Argumento de entrada): lista ( image ) , lista (la representación de la imagen invertida horizontalmente) .
 */
 imageFlipH(Imagen , NewImagen):-
     pixeles(Imagen,Pixeles),
@@ -385,8 +377,7 @@ imageFlipH(Imagen , NewImagen):-
 /*
 Predicado: flipV
 Descripcion: Invierte verticalmente un pixel , cambiando su alto.
-Dominio(Argumento de entrada): lista (Pixel) , Numero(Alto de la imagen).
-Recorrido(Retorno): Lista(Nuevo pixel invertido horizontalmente).
+Dominio(Argumento de entrada): lista (Pixel) , Numero(Alto de la imagen) , Lista(Nuevo pixel invertido horizontalmente).
 */
 
 flipV([AltoPixel|Cola],AltoImage,NewPixel):-
@@ -397,9 +388,8 @@ flipV([AltoPixel|Cola],AltoImage,NewPixel):-
 /*
 Predicado: pixflipV
 Descripcion: Predicado que invierte verticalmente pixel por pixel , cambiando su alto.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Alto de la imagen).
-Recorrido(Retorno): lista(Nueva lista de pixeles).
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles) , Numero(Alto de la imagen) , lista(Nueva lista de pixeles).
 */
 pixflipV([],_,[]).
 pixflipV([Pixel|Pixeles],AltoImage,[NewPixel|RespSig]):-
@@ -408,9 +398,8 @@ pixflipV([Pixel|Pixeles],AltoImage,[NewPixel|RespSig]):-
 
 /*
 Predicado: imageFlipV
-Descripcion: Predicado que permite invertir una imÃ¡gen Verticalmente, a traves del cambio de la variable alto.
-Dominio(Argumento de entrada): lista ( image )
-Recorrido(Retorno): lista (la representaciÃ³n de la imagen invertida verticalmente)
+Descripcion: Predicado que permite invertir una imágen Verticalmente, a traves del cambio de la variable alto.
+Dominio(Argumento de entrada): lista ( image ) , lista (la representación de la imagen invertida verticalmente).
 */
 imageFlipV(Imagen , NewImagen):-
     pixeles(Imagen,Pixeles),
@@ -439,8 +428,7 @@ between(X1,Y1,X2,Y2,[AltoPixel , AnchoPixel|_]):-
 /*
 Predicado: getmenor
 Descripcion: Predicado que retorna el menor numero , entre 2 valores de entrada.
-Dominio(Argumento de entrada): Numero(entero), Numero(entero).
-Recorrido(Retorno): Numero(entero).
+Dominio(Argumento de entrada): Numero(entero), Numero(entero) , Numero(entero).
 */
 getmenor(Numero1 , Numero2 , MenorNumero):-
     Numero1 >= Numero2 , MenorNumero = Numero2 , ! ; Numero1 =< Numero2 , MenorNumero = Numero1.
@@ -448,8 +436,7 @@ getmenor(Numero1 , Numero2 , MenorNumero):-
 /*
 Predicado: valorabsoluto
 Descripcion: Predicado que toma un numero y lo combierte a positivo en caso de ser negativo.
-Dominio(Argumento de entrada): Numero(entero).
-Recorrido(Retorno): Numero >= 0.
+Dominio(Argumento de entrada): Numero(entero) , Numero >= 0.
 */
 valorabsoluto(Numero1 , NumeroAbs ):-
     Numero1 >= 0 , NumeroAbs = Numero1  , ! ; Numero1 =< 0 , NumeroAbs is  -1 * Numero1.
@@ -457,8 +444,7 @@ valorabsoluto(Numero1 , NumeroAbs ):-
 /*
 Predicado: cambiocrop
 Descripcion: Predicado que toma un pixel y cambia sus parametros de ancho y alto.
-Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixel).
-Recorrido(Retorno): lista(Nuevo Pixel).
+Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixel), lista(Nuevo Pixel).
 */
 cambiocrop(MenorX,MenorY,[AltoPixel , AnchoPixel|Cola],NewPixel):-
     NewAltoPixel is AltoPixel - MenorY,
@@ -468,9 +454,8 @@ cambiocrop(MenorX,MenorY,[AltoPixel , AnchoPixel|Cola],NewPixel):-
 /*
 Predicado: crop_pixels
 Descripcion: Predicado que va pixel por pixel , cambiando sus parametros de ancho y alto.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixeles).
-Recorrido(Retorno): lista(Nueva lista de pixeles).
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Numero(MenorX) ,Numero(Menory) ,lista ( Pixeles), lista(Nueva lista de pixeles).
 */
 crop_pixels(_,_,[],[]):- !.
 crop_pixels(MenorX , MenorY , [Pixel|Pixeles],[NewPixel|RespSig]):-
@@ -479,9 +464,8 @@ crop_pixels(MenorX , MenorY , [Pixel|Pixeles],[NewPixel|RespSig]):-
 
 /*
 Predicado: imageCrop
-Descripcion: Predicado que permite recortar una imÃ¡gen a partir de un cuadrante, entregado por coordenadas(2 puntos).
-Dominio(Argumento de entrada): lista ( image ) ,  x1  ,  Y1  ,  x2  , y2.
-Recorrido(Retorno): lista (NewImagen).
+Descripcion: Predicado que permite recortar una imágen a partir de un cuadrante, entregado por coordenadas(2 puntos).
+Dominio(Argumento de entrada): lista ( image ) ,  x1  ,  Y1  ,  x2  , y2 , lista (NewImagen).
 */
 imageCrop(Imagen , X1 , Y1 , X2 , Y2 , NewImagen):-
     AnchoTemp is X2-X1,
@@ -528,9 +512,8 @@ num_string(15,"F").
 Predicado: divbase16
 Descripcion: Predicado en el que se divide un numero entre 16 , se conserva el resto en una lista y se vuelve a dividir el cociente,
 			 Hasta que este sea menor que 16 y se guarda en la lista.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): Numero>=0.
-Recorrido(Retorno): lista.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): Numero>=0 , lista.
 */
 divbase16(NumeroPos , [NumeroPos]):- NumeroPos < 16 , !.
 divbase16(NumeroPos , RestX):-
@@ -543,9 +526,8 @@ divbase16(NumeroPos , RestX):-
 /*
 Predicado: numberstring
 Descripcion: Predicado que te tranforma un numero a su representacion en Hexadecimal.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): lista.
-Recorrido(Retorno): String.
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista , String.
 */
 numberstring2([],""):- !.
 numberstring2([NumeroPos,NumeroPos2|Cola],StringX):-
@@ -558,8 +540,7 @@ numberstring2([NumeroPos,NumeroPos2|Cola],StringX):-
 /*
 Predicado: numberstring
 Descripcion: Predicado que te tranforma un numero a su representacion en Hexadecimal.
-Dominio(Argumento de entrada): lista.
-Recorrido(Retorno): String.
+Dominio(Argumento de entrada): lista , String.
 */
 numberstring(RestX,StringX):-
     contador(RestX,RespContador), RespContador == 1 , obtposicion(1,RestX,NumeroPos),
@@ -569,8 +550,7 @@ numberstring(RestX,StringX):-
 /*
 Predicado: pixstring
 Descripcion: Predicado en el cual transforma la representacion de un pixel RGB a HEX.
-Dominio(Argumento de entrada): lista ( Pixel).
-Recorrido(Retorno): lista(Nuevo Pixel).
+Dominio(Argumento de entrada): lista ( Pixel) , lista(Nuevo Pixel).
 */
 pixelstring(Pixel,NewPixel):-
     obtposicion(1,Pixel,AltoPixel),
@@ -593,9 +573,8 @@ pixelstring(Pixel,NewPixel):-
 /*
 Predicado: pixstring
 Descripcion: Predicado que va pixel por pixel , en el cual transforma la representacion de un pixel RGB a HEX.
-Tipo de algoritmo/estrategia: RecursiÃ³n.
-Dominio(Argumento de entrada): lista ( Pixeles).
-Recorrido(Retorno): lista(Nueva lista de pixeles).
+Tipo de algoritmo/estrategia: Recursión.
+Dominio(Argumento de entrada): lista ( Pixeles) , lista(Nueva lista de pixeles).
 */
 pixstring([],[]).
 pixstring([Pixel|Pixeles],[NewPixel|RespSig]):-
@@ -604,9 +583,8 @@ pixstring([Pixel|Pixeles],[NewPixel|RespSig]):-
 
 /*
 Predicado: imageRGBToHex
-Descripcion: Predicado que permite transformar una imagen desde una representaciÃ³n RGB a una representaciÃ³n HEX.
-Dominio(Argumento de entrada): lista ( image )
-Recorrido(Retorno): lista (la imagen con la nueva representaciÃ³n).
+Descripcion: Predicado que permite transformar una imagen desde una representación RGB a una representación HEX.
+Dominio(Argumento de entrada): lista ( image ) , lista (la imagen con la nueva representación).
 */
 imageRGBToHex(Imagen, NewImagen):-
     imageIsPixmap(Imagen),
@@ -629,9 +607,8 @@ imageRGBToHex(Imagen, NewImagen):-
 /*
 Predicado: conteopixel
 Descripcion: Predicado que cuenta la frecuencia de un color en una lista de pixeles.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles).
-Recorrido(Retorno): Numero(entero).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles) , Numero(entero).
 */
 conteopixel(_,[],1):- !.
 conteopixel(Pixel,[Pixel2|Pixeles],RespContador):-
@@ -647,7 +624,7 @@ conteopixel(Pixel,[Pixel2|Pixeles],RespContador):-
 Predicado: limpieza
 Descripcion: Predicado en el cual compara los colores de los pixeles ingresados para verificar si son iguales o no.
 Dominio(Argumento de entrada): lista ( Pixel) , lista ( Pixel).
-Recorrido(Retorno): Booleano..
+Recorrido(Retorno): Booleano.
 */
 limpieza(Pixel,Pixel2):-
     obtposicion(3,Pixel,Color1),
@@ -657,10 +634,9 @@ limpieza(Pixel,Pixel2):-
 /*
 Predicado: histogram
 Descripcion: Predicado que toma un pixel, cuenta la frecuencia de su color en la lista de pixeles y sucesivamente se elimina los pixeles
-             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursiÃ³n.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixeles).
-Recorrido(Retorno): lista(Histograma de frecuencia de cada color).
+             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursión.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles) , lista(Histograma de frecuencia de cada color).
 */
 histogram([],[]):- !.
 histogram([Pixel|Pixeles],[HistoColor|RespSig]):-
@@ -675,9 +651,8 @@ histogram([Pixel|Pixeles],[HistoColor|RespSig]):-
 /*
 Predicado: conteopixelRGB
 Descripcion: Predicado que cuenta la frecuencia de un color en una lista de pixeles.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles).
-Recorrido(Retorno): Numero(entero).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel) ,lista ( Pixeles) , Numero(entero).
 */
 conteopixelRGB(_,[],1):- !.
 conteopixelRGB(Pixel,[Pixel2|Pixeles],RespContador):-
@@ -715,10 +690,9 @@ limpieza2(Pixel,Pixel2):-
 /*
 Predicado: histogramRGB
 Descripcion: Predicado que toma un pixel, cuenta la frecuencia de su color en la lista de pixeles y sucesivamente se elimina los pixeles
-             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursiÃ³n.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixeles).
-Recorrido(Retorno): lista(Histograma de frecuencia de cada color).
+             que contengan el mismo color del pixel de la lista de pixeles, con la finalidad de que no se repita el color y finalmente se hace la recursión.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles) , lista(Histograma de frecuencia de cada color).
 */
 histogramRGB([],[]):- !.
 histogramRGB([Pixel|Pixeles],[HistoColor|RespSig]):-
@@ -733,9 +707,8 @@ histogramRGB([Pixel|Pixeles],[HistoColor|RespSig]):-
 
 /*
 Predicado: imageToHistogram
-Descripcion: Predicado que retorna un histograma de frecuencias a partir de los colores en cada una de las imÃ¡genes.
-Dominio(Argumento de entrada): lista ( image ).
-Recorrido(Retorno): lista (lista con la cantidad de frecuencia de cada color , ej: [[1, 2], [0, 2]] ) .
+Descripcion: Predicado que retorna un histograma de frecuencias a partir de los colores en cada una de las imágenes.
+Dominio(Argumento de entrada): lista ( image ), lista (lista con la cantidad de frecuencia de cada color , ej: [[1, 2], [0, 2]] ) .
 */
 imageToHistogram(Imagen,Histogram):-
     imageIsHexmap(Imagen),
@@ -760,9 +733,8 @@ imageToHistogram(Imagen,Histogram):-
 /*
 Predicado: cambiopix
 Descripcion: Predicado que toma un pixel y realiza un intercambio entre su ancho y alto.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixel).
-Recorrido(Retorno): lista(Nuevo Pixel).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixel) , lista(Nuevo Pixel).
 */
 cambiopix([AltoPixel,AnchoPixel|Cola],NewPixel):-
     append([AnchoPixel,AltoPixel],Cola,NewPixel).
@@ -771,9 +743,8 @@ cambiopix([AltoPixel,AnchoPixel|Cola],NewPixel):-
 /*
 Predicado: cambiaparametros
 Descripcion: Predicado que va pixel por pixel , cambiando el ancho y alto de estos.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Pixeles).
-Recorrido(Retorno): lista(Nueva lista de Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Pixeles), lista(Nueva lista de Pixeles).
 */
 cambiaparametros([],[]):- !.
 cambiaparametros([Pixel|Pixeles],[NewPixel|RespSig]):-
@@ -782,9 +753,8 @@ cambiaparametros([Pixel|Pixeles],[NewPixel|RespSig]):-
 
 /*
 Predicado: imageRotate90
-Descripcion: Predicado que permite rotar la imagen 90Â° a la derecha.
-Dominio(Argumento de entrada): lista ( image )
-Recorrido(Retorno): lista (la imagen rotada 90Â° a la derecha)
+Descripcion: Predicado que permite rotar la imagen 90° a la derecha.
+Dominio(Argumento de entrada): lista ( image ) , lista (la imagen rotada 90° a la derecha).
 */
 imageRotate90(Imagen,NewImagen):-
     imageFlipV(Imagen,ImagenFlip),
@@ -804,9 +774,8 @@ imageRotate90(Imagen,NewImagen):-
 /*
 Predicado: getmayorhistogram
 Descripcion: Predicado que te entrega el color con mayor frecuencia obtenido del predicado Histogram.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista ( Histogram).
-Recorrido(Retorno): lista([color,frecuencia]).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista ( Histogram) , lista([color,frecuencia]).
 */
 getmayorhistogram([Colorf|Histogram],MayorHistogram1):- [] == Histogram ,MayorHistogram1 = Colorf, !.
 getmayorhistogram([Colorf|Histogram],MayorHistogram):-
@@ -825,9 +794,8 @@ getmayorhistogram([Colorf|Histogram],MayorHistogram):-
 /*
 Predicado: myreplaceC1
 Descripcion: Predicado que encierra con corchete el pixel que contenga el color con mayor frecuencia en la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): Color (Bit o Hex) , lista (Pixeles).
-Recorrido(Retorno): lista(Nueva lista de Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): Color (Bit o Hex) , lista (Pixeles) , lista(Nueva lista de Pixeles).
 */
 myreplaceC1(_, [], []):- !.%caso base
 myreplaceC1(Color, [Pixel|Pixeles], [[Pixel]|RespSig]) :- obtposicion(3,Pixel,Color2), Color2 == Color ,myreplaceC1(Color,Pixeles, RespSig), !. %Donde se remplaza
@@ -837,9 +805,8 @@ myreplaceC1(Color, [Pixel|Pixeles], [Pixel|RespSig]) :- obtposicion(3,Pixel,Colo
 /*
 Predicado: myreplaceC2
 Descripcion: Predicado que encierra con corchete el pixel que contenga el color con mayor frecuencia en la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): Color ( lista con el color RGB) , lista (Pixeles).
-Recorrido(Retorno): lista(Nueva lista de Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): Color ( lista con el color RGB) , lista (Pixeles) , lista(Nueva lista de Pixeles).
 */
 myreplaceC2(_, [], []):- !.%caso base
 myreplaceC2(Color, [Pixel|Pixeles], [[Pixel]|RespSig]) :-
@@ -859,10 +826,9 @@ myreplaceC2(Color, [Pixel|Pixeles], [Pixel|RespSig]) :-
 
 /*
 Predicado: imageCompress
-Descripcion: Predicado que comprime una imagen eliminando aquellos pÃ­xeles con el color mÃ¡s frecuente, la eliminaciÃ³n
-             se representa con el doble corchete, esto se hace de tal manera de poder conservar los pÃ­xeles eliminados.
-Dominio(Argumento de entrada): lista ( image )
-Recorrido(Retorno): lista (la imagen comprimida)
+Descripcion: Predicado que comprime una imagen eliminando aquellos píxeles con el color más frecuente, la eliminación
+             se representa con el doble corchete, esto se hace de tal manera de poder conservar los píxeles eliminados.
+Dominio(Argumento de entrada): lista ( image ) , lista (la imagen comprimida).
 */
 imageCompress(Imagen , NewImagen):-
     imageIsHexmap(Imagen),
@@ -902,10 +868,9 @@ imageCompress(Imagen , NewImagen):-
 
 /*
 Predicado: myreplacepixel
-Descripcion: Predicado que busca el pixel que se quiere remplazar por medio de su posiciÃ³n y se sustituye por el nuevo pixel.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista(Pixel) , lista (Pixeles).
-Recorrido(Retorno): lista(Nueva lista de Pixeles).
+Descripcion: Predicado que busca el pixel que se quiere remplazar por medio de su posición y se sustituye por el nuevo pixel.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista(Pixel) , lista (Pixeles) , lista(Nueva lista de Pixeles).
 */
 myreplacepixel(_, [], []):- !. %caso base 1
 myreplacepixel(Pixel, [Pixel2|Pixeles], [Pixel|Pixeles]) :- % caso base 2 ,Donde se remplaza
@@ -928,9 +893,8 @@ myreplacepixel(Pixel, [Pixel2|Pixeles], [Pixel2|RespSig]) :-
 
 /*
 Predicado: imageChangePixel
-Descripcion: Predicado permite reemplazar un pÃ­xel en una imagen.
-Dominio(Argumento de entrada): lista ( image ) , lista ( Pixel).
-Recorrido(Retorno): lista (Nueva imagen con el pixel reemplazado).
+Descripcion: Predicado permite reemplazar un píxel en una imagen.
+Dominio(Argumento de entrada): lista ( image ) , lista ( Pixel), lista (Nueva imagen con el pixel reemplazado).
 */
 imageChangePixel( Imagen , Pixel , NewImagen):-
     obtposicion(1,Imagen,AnchoImagen),
@@ -950,8 +914,7 @@ imageChangePixel( Imagen , Pixel , NewImagen):-
 /*
 Predicado: invertirRGB
 Descripcion: Predicado que permite cambiar un color a su opuesto.
-Dominio(Argumento de entrada): Numero.
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Numero , Numero.
 */
 invertirRGB(Numero , Numero2):-
     Numero2 is 255-Numero.
@@ -959,9 +922,8 @@ invertirRGB(Numero , Numero2):-
 
 /*
 Predicado: imageInvertColorRGB
-Descripcion: Predicado que permite obtener el color simÃ©tricamente opuesto en cada canal dentro de un pixel.
-Dominio(Argumento de entrada): lista ( Pixel).
-Recorrido(Retorno): lista (Nuevo Pixel).
+Descripcion: Predicado que permite obtener el color simétricamente opuesto en cada canal dentro de un pixel.
+Dominio(Argumento de entrada): lista ( Pixel) , lista (Nuevo Pixel).
 */
 imageInvertColorRGB(Pixel , NewPixel):-
     obtposicion(1,Pixel,AltoPixel),
@@ -996,9 +958,8 @@ igualpixel(AltoPixel,AnchoPixel , Pixel):-
 /*
 Predicado: setpixelancho
 Descripcion: Predicado que permite ir avanzando el parametro de ancho y por ende obtiene los colores de una fila(alto).
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto fijo), Numero(AnchoImage) , Numero (Acum).
-Recorrido(Retorno): Lista( ListColor).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto fijo), Numero(AnchoImage) , Numero (Acum) , Lista( ListColor).
 */
 setpixelancho(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
 setpixelancho(Pixeles , Alto , AnchoImage , Acum , [Color|RespSig]):-
@@ -1011,9 +972,8 @@ setpixelancho(Pixeles , Alto , AnchoImage , Acum , [Color|RespSig]):-
 /*
 Predicado: setpixelalto
 Descripcion: Predicado que permite ir avanzando el parametro de alto , permite obtener todos los colores de un alto en especifico.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero(AnchoImage) , Numero(AltoImage) , Numero (Acum).
-Recorrido(Retorno): Lista( ListsColor).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(AnchoImage) , Numero(AltoImage) , Numero (Acum) , Lista( ListsColor).
 */
 setpixelalto(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
 setpixelalto(Pixeles, AnchoImage , AltoImage , Acum , [ListColor|RespSig]):-
@@ -1024,9 +984,8 @@ setpixelalto(Pixeles, AnchoImage , AltoImage , Acum , [ListColor|RespSig]):-
 /*
 Predicado: listString
 Descripcion: Predicado que toma una lista de colores ( bit ) y los transforma a la representacion string.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (ListColor).
-Recorrido(Retorno): String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListColor) , String.
 */
 liststring([],""):- !.
 liststring([Color|ListColor], String):-
@@ -1038,9 +997,8 @@ liststring([Color|ListColor], String):-
 /*
 Predicado: listasString
 Descripcion: Predicado que permite ir avanzando entre las listas de los colores , con la finalidad de ir tranformandolos a la representacion String.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (ListsColor).
-Recorrido(Retorno): String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListsColor) , String.
 */
 listasString([],""):- !.
 listasString([ListColor|ListsColor] , String):-
@@ -1054,9 +1012,8 @@ listasString([ListColor|ListsColor] , String):-
 /*
 Predicado: listString2
 Descripcion: Predicado que toma una lista de colores ( Hexadecimal ) y los transforma a la representacion string.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (ListColor).
-Recorrido(Retorno): String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListColor) , String.
 */
 liststring2([],""):- !.
 liststring2([Color|ListColor], String):-
@@ -1067,9 +1024,8 @@ liststring2([Color|ListColor], String):-
 /*
 Predicado: listasString2
 Descripcion: Predicado que permite ir avanzando entre las listas de los colores , con la finalidad de ir tranformandolos a la representacion String.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (ListsColor).
-Recorrido(Retorno): String.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (ListsColor) , String.
 */
 listasString2([],""):- !.
 listasString2([ListColor|ListsColor] , String):-
@@ -1081,9 +1037,8 @@ listasString2([ListColor|ListsColor] , String):-
 
 /*
 Predicado: imageToString
-Descripcion: Predicado que transforma una imagen a una representaciÃ³n string.
-Dominio(Argumento de entrada): lista(Imagen).
-Recorrido(Retorno): String.
+Descripcion: Predicado que transforma una imagen a una representación string.
+Dominio(Argumento de entrada): lista(Imagen) , String.
 */
 imageToString(Imagen , String):-
     imageIsHexmap(Imagen),
@@ -1137,9 +1092,8 @@ profundi2(P , Pixel):-
 /*
 Predicado: xprofundidad
 Descripcion: Predicado que permite separar los pixeles por lista dependiendo de su profundidad.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles).
-Recorrido(Retorno): Lista.
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Lista.
 */
 xprofundidad([] , []):- !.
 xprofundidad(Pixeles , [Pixeles2|RespSig]):-
@@ -1158,9 +1112,8 @@ xprofundidad(Pixeles , [Pixeles2|RespSig]):-
 /*
 Predicado: getpixel
 Descripcion: Predicado que permite obtener el pixel que se encuentra en un alto y ancho especifico.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Posicion a buscar ej: [1, 0 , _ , _ ]) , lista (Pixeles).
-Recorrido(Retorno): Lista(Pixel).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Posicion a buscar ej: [1, 0 , _ , _ ]) , lista (Pixeles) , Lista(Pixel).
 */
 getpixel(_, [], []):- !.
 getpixel(Posicion, [Pixel|_], R) :- Posicion =Pixel , R = Pixel, !.
@@ -1173,9 +1126,8 @@ getpixel(Posicion, [Pixel|Pixeles], R) :- Posicion \= Pixel, getpixel(Posicion, 
 /*
 Predicado: getpixelancho1
 Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixel).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum) , Lista(Pixel).
 */
 getpixelancho1(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
 getpixelancho1(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
@@ -1193,9 +1145,8 @@ getpixelancho1(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
 /*
 Predicado: getpixelalto1
 Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum) , Lista(Pixeles).
 */
 
 getpixelalto1(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
@@ -1208,9 +1159,8 @@ getpixelalto1(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
 /*
 Predicado: imagenes
 Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
-Recorrido(Retorno): Lista(Imagenes).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen) , Lista(Imagenes).
 */
 
 imagenes([],_,_,[]):- !.
@@ -1226,9 +1176,8 @@ imagenes([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig
 /*
 Predicado: getpixelancho2
 Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixel).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum) , Lista(Pixel).
 */
 getpixelancho2(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
 getpixelancho2(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
@@ -1247,9 +1196,8 @@ getpixelancho2(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
 /*
 Predicado: getpixelalto2
 Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum) , Lista(Pixeles).
 */
 getpixelalto2(_,_,AltoImage,Acum,[]):- AltoImage == Acum ,!.
 getpixelalto2(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
@@ -1262,9 +1210,8 @@ getpixelalto2(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
 /*
 Predicado: imagenes2
 Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
-Recorrido(Retorno): Lista(Imagenes).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen) , Lista(Imagenes).
 */
 imagenes2([],_,_,[]):- !.
 imagenes2([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig]):-
@@ -1280,9 +1227,8 @@ imagenes2([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSi
 /*
 Predicado: getpixelancho3
 Descripcion: Predicado que permite avanzar el parametro del ancho, permite rellenar los espacios con el pixel de color blanco.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixel).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero (Alto pixel) , Numero(Ancho imagen) , Numero(Acum) , Lista(Pixel).
 */
 getpixelancho3(_,_,AnchoImage,Acum , [] ):- AnchoImage == Acum ,!.
 getpixelancho3(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
@@ -1300,9 +1246,8 @@ getpixelancho3(Pixeles , AltoPixel , AnchoImage , Acum , [Pixel3|RespSig]):-
 /*
 Predicado: getpixelalto3
 Descripcion: Predicado que permite avanzar el parametro del alto, para ir rellenando en el orden adecuado.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum).
-Recorrido(Retorno): Lista(Pixeles).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Numero(Ancho imagen) , Numero (Alto Imagen) , Numero(Acum) , Lista(Pixeles).
 */
 getpixelalto3(_,_,Alto,Acum,[]):- Alto == Acum ,!.
 getpixelalto3(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
@@ -1315,9 +1260,8 @@ getpixelalto3(Pixeles, AnchoImage , AltoImage , Acum , ListPixelDepth):-
 /*
 Predicado: imagenes3
 Descripcion: Predicado que va lista x lista de los pixeles por profundidades , el cual rellena las posiciones vacias con el pixel de color blanco y completa la imagen.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (PixelesXprofundidades) , Numero(Ancho imagen) , Numero (Alto Imagen).
-Recorrido(Retorno): Lista(Imagenes).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista(PixelesXprofundidades) , Numero(Ancho imagen) , Numero(Alto Imagen) , Lista(Imagenes).
 */
 imagenes3([],_,_,[]):- !.
 imagenes3([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSig]):-
@@ -1330,9 +1274,8 @@ imagenes3([ListPixelDepth|ListPixelxdepth],AnchoImage, AltoImage, [Imagen|RespSi
 
 /*
 Predicado: imageDepthLayers
-Descripcion: Predicado que permite separar una imÃ¡gen en capas en base a la profundidad en que se sitÃºan los pixeles.
-Dominio(Argumento de entrada): lista (imagen).
-Recorrido(Retorno): Lista(ImagenesXprofundidades).
+Descripcion: Predicado que permite separar una imágen en capas en base a la profundidad en que se sitúan los pixeles.
+Dominio(Argumento de entrada): lista (imagen) , Lista(ImagenesXprofundidades).
 */
 imageDepthLayers(Imagen,ListDL):-
     imageIsPixmap(Imagen),
@@ -1365,9 +1308,8 @@ imageDepthLayers(Imagen,ListDL):-
 /*
 Predicado: myreplaceDeCom
 Descripcion: Predicado que permite ir avanzando pixel por pixel, verificando si estos estan dentro de otra lista , en caso de que sea asi, le saca los corchetes.
-Tipo de algoritmo/estrategia: RecursiÃ³n natural.
-Dominio(Argumento de entrada): lista (Pixeles).
-Recorrido(Retorno): Lista(Pixeles descomprimidos).
+Tipo de algoritmo/estrategia: Recursión natural.
+Dominio(Argumento de entrada): lista (Pixeles) , Lista(Pixeles descomprimidos).
 */
 myreplaceDeCom([], []):- !.%caso base
 myreplaceDeCom([PixelCompress|Pixeles], [Pixel|RespSig]) :-
@@ -1383,9 +1325,8 @@ myreplaceDeCom([Pixel|Pixeles], [Pixel|RespSig]) :-
 
 /*
 Predicado: imageDecompress
-Descripcion: Predicado que permite descomprimir una imÃ¡gen comprimida.
-Dominio(Argumento de entrada): lista (Imagen).
-Recorrido(Retorno): Lista (Nueva Imagen).
+Descripcion: Predicado que permite descomprimir una imágen comprimida.
+Dominio(Argumento de entrada): lista (Imagen) , Lista (Nueva Imagen).
 */
 imageDecompress(Imagen , NewImagen):-
     obtposicion(1,Imagen, AnchoImage),

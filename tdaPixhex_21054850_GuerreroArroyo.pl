@@ -35,7 +35,7 @@ Principales:
      pixhex.
 
 secundario:
-    obtposicion2 , contador2, getHex, pixhex.
+     obtposicion2 , contador2, getHex, pixhex.
 
 */
 
@@ -52,8 +52,7 @@ secundario:
 /*
 Predicado: pixhex
 Descripción: Predicado contructor, en el cual verifica las condiciones para un pixhex y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , String , Numero.
-Recorrido(Retorno): Lista (representación del pixHex).
+Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , String , Numero , Lista (representación del pixHex).
 */
 pixhex(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]):-
     number(AltoPixel),
@@ -69,8 +68,7 @@ pixhex(AltoPixel,AnchoPixel,Hex,Depth,[AltoPixel,AnchoPixel,Hex,Depth]):-
 /*
 Predicado: getHex
 Descripción: Entrega el Hexadecimal de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): String.
+Dominio(Argumento de entrada): Lista (pixel) , String.
 */
 getHex(Pixel,Hex):-
     obtposicion2(3,Pixel,Hex).
@@ -95,8 +93,7 @@ pixhex(Pixel):-
 Predicado: obtposicion
 Descripción: Te entrega el contenido que se encuentra en la pisicion pedida de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista.
-Recorrido(Retorno): Contenido que se encontraba en la posicion pedida.
+Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista , Contenido que se encontraba en la posicion pedida.
 */
 obtposicion2(1,[Contenido|_],Contenido):- !.
 obtposicion2(Contador,[_|Cola],Contenido):-
@@ -111,8 +108,7 @@ obtposicion2(Contador,[_|Cola],Contenido):-
 Predicado: contador
 Descripción: Entrega el largo de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Lista.
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista , Numero.
 */
 contador2([],0):- !.
 contador2([_|Cola],Contador):- contador2(Cola,RespSig), Contador is RespSig+1.

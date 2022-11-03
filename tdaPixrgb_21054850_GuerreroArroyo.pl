@@ -57,8 +57,7 @@ secundario:
 /*
 Predicado: pixrgb
 Descripción: Predicado contructor, en el cual verifica las condiciones para un pixrgb y te entrega su representación(lista).
-Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero(Color R) , Numero(Color G) , Numero(Color B) , Numero.
-Recorrido(Retorno): Lista (representación del pixrgb).
+Dominio(Argumento de entrada): Numero(Alto) , Numero(Ancho) , Numero(Color R) , Numero(Color G) , Numero(Color B) , Numero , Lista (representación del pixrgb).
 */
 pixrgb(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth]):-
     number(AltoPixel),
@@ -78,16 +77,14 @@ pixrgb(AltoPixel,AnchoPixel,ColorR,ColorG,ColorB,Depth,[AltoPixel,AnchoPixel,Col
 /*
 Predicado: getR
 Descripción: Entrega el Color R de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista (pixel) , Numero.
 */
 getR(Pixel,ColorR):-
     obtposicion3(3,Pixel,ColorR).
 /*
 Predicado: getG
 Descripción: Entrega el Color G de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista (pixel) , Numero.
 */
 getG(Pixel,ColorG):-
     obtposicion3(4,Pixel,ColorG).
@@ -95,8 +92,7 @@ getG(Pixel,ColorG):-
 /*
 Predicado: getB
 Descripción: Entrega el Color B de un pixel.
-Dominio(Argumento de entrada): Lista (pixel).
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista (pixel) , Numero.
 */
 getB(Pixel,ColorB):-
     obtposicion3(5,Pixel,ColorB).
@@ -121,8 +117,7 @@ pixRGB(Pixel):-
 Predicado: obtposicion
 Descripción: Te entrega el contenido que se encuentra en la pisicion pedida de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista.
-Recorrido(Retorno): Contenido que se encontraba en la posicion pedida.
+Dominio(Argumento de entrada): Numero(Posicion pedida) , Lista , Contenido que se encontraba en la posicion pedida.
 */
 obtposicion3(1,[Contenido|_],Contenido):- !.
 obtposicion3(Contador,[_|Cola],Contenido):-
@@ -137,8 +132,7 @@ obtposicion3(Contador,[_|Cola],Contenido):-
 Predicado: contador
 Descripción: Entrega el largo de una lista.
 Tipo de algoritmo/estrategia: Recursión.
-Dominio(Argumento de entrada): Lista.
-Recorrido(Retorno): Numero.
+Dominio(Argumento de entrada): Lista, Numero.
 */
 contador3([],0):- !.
 contador3([_|Cola],Contador):- contador3(Cola,RespSig), Contador is RespSig+1.
