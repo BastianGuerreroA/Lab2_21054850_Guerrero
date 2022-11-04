@@ -277,12 +277,12 @@ image( 2, 2, [PA, PB, PC, PD], I), imageIsPixmap( I ).
 Entrega True:
 pixbit( 0, 0, 1, 10, PA), pixbit( 0, 1, 1, 20, PB),
 pixbit( 1, 0, 0, 30, PC), pixbit( 1, 1, 0, 40, PD), 
-image( 2, 2, [PA, PB, PC, PD], I), imageCompress(I, I2), imageIsCompressed( I ).
+image( 2, 2, [PA, PB, PC, PD], I), imageCompress(I, I2), imageIsCompressed( I2 ).
 
 Entrega True:
 pixhex( 0, 0, "#FFFFFF", 10, PA), pixhex( 0, 1, "#FF00FF", 20, PB), 
 pixhex( 1, 0, "#FF00FF", 30, PC), pixhex( 1, 1, "#FFFFFF", 40, PD), 
-image( 2, 2, [PA, PB, PC, PD], I), imageCompress(I, I2),  imageIsCompressed( I ).
+image( 2, 2, [PA, PB, PC, PD], I), imageCompress(I, I2),  imageIsCompressed( I2).
 
 
 Entrega False:
