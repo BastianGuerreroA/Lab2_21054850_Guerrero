@@ -223,16 +223,16 @@ image( 2, 2, [PA, PB, PC, PD], I), imageToString(I, Str),write(Str).
 
 -TDA image - is bitmap
 
-False:
+Entrega False:
 pixhex( 0, 0, "#FFFFFF", 10, PA), pixhex( 0, 1, "#FF00FF", 20, PB), 
 pixhex( 1, 0, "#FF00FF", 30, PC), pixhex( 1, 1, "#FF00FF", 40, PD), 
 image( 2, 2, [PA, PB, PC, PD], I), imageIsBitmap( I ).
 
-True:
+Entrega True:
 pixbit( 0, 0, 1, 10, PA), pixbit( 0, 1, 0, 20, PB), pixbit( 1, 0, 1, 30, PC), 
 pixbit( 1, 1, 0, 40, PD), image( 2, 2, [PA, PB, PC, PD], I), imageIsBitmap( I ).
 
-False:
+Entrega False:
 pixrgb( 0, 0, 255, 255, 255, 10, PA), pixrgb( 0, 1, 20, 20, 20, 20, PB), 
 pixrgb( 1, 0, 30, 30, 30, 30, PC), pixrgb( 1, 1, 255, 255, 255, 40, PD), 
 image( 2, 2, [PA, PB, PC, PD], I), imageIsBitmap( I ).
@@ -240,16 +240,16 @@ image( 2, 2, [PA, PB, PC, PD], I), imageIsBitmap( I ).
 
 -TDA image - is hexmap:
 
-False:
+Entrega False:
 pixbit( 0, 0, 1, 10, PA), pixbit( 0, 1, 1, 20, PB), pixbit( 1, 0, 1, 30, PC), 
 pixbit( 1, 1, 1, 40, PD), image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
 
-False:
+Entrega False:
 pixrgb( 0, 0, 255, 255, 255, 10, PA), pixrgb( 0, 1, 20, 20, 20, 20, PB), 
 pixrgb( 1, 0, 30, 30, 30, 30, PC), pixrgb( 1, 1, 255, 255, 255, 40, PD), 
 image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
 
-True:
+Entrega True:
 pixhex( 0, 0, "#FFFFFF", 10, PA), pixhex( 0, 1, "#FF00FF", 20, PB), 
 pixhex( 1, 0, "#FF00FF", 30, PC), pixhex( 1, 1, "#FF00FF", 40, PD), 
 image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
@@ -257,19 +257,19 @@ image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
 
 -TDA image - is pixmap: 
 
-False:
+Entrega False:
 pixbit( 0, 0, 0, 10, PA), pixbit( 0, 1, 0, 20, PB), pixbit( 1, 0, 0, 30, PC), 
-pixbit( 1, 1, 0, 40, PD), image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
+pixbit( 1, 1, 0, 40, PD), image( 2, 2, [PA, PB, PC, PD], I), imageIsPixmap( I ).
 
-True:
+Entrega True:
 pixrgb( 0, 0, 255, 255, 255, 10, PA), pixrgb( 0, 1, 255, 255, 255, 20, PB), 
 pixrgb( 1, 0, 255, 255, 255, 30, PC), pixrgb( 1, 1, 255, 255, 255, 40, PD), 
-image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
+image( 2, 2, [PA, PB, PC, PD], I), imageIsPixmap( I ).
 
-False:
+Entrega False:
 pixhex( 0, 0, "#FFFFFF", 10, PA), pixhex( 0, 1, "#FF00FF", 20, PB), 
 pixhex( 1, 0, "#FF00FF", 30, PC), pixhex( 1, 1, "#FFFFFF", 40, PD), 
-image( 2, 2, [PA, PB, PC, PD], I), imageIsHexmap( I ).
+image( 2, 2, [PA, PB, PC, PD], I), imageIsPixmap( I ).
 
 
 -TDA image - is compressed:
